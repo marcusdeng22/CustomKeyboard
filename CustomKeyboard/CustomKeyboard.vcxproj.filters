@@ -6,6 +6,8 @@
     <ClCompile Include="Layers\Cycle.cpp">
       <Filter>Layers</Filter>
     </ClCompile>
+    <ClCompile Include="Color.cpp" />
+    <ClCompile Include="LogitechLEDLib.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomKeyboard.h" />

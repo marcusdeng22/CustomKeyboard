@@ -19,10 +19,12 @@ protected:
 	//unsigned char *bitmap;
 	//std::vector<unsigned char>* bitmap;
 	ColorMap *colorMap = nullptr;
+	bool associated = false;
 
 public:
 	void Associate(ColorMap *ptr) {
 		colorMap = ptr;
+		associated = true;
 	}
 
 	void SetCondition(Condition c) {

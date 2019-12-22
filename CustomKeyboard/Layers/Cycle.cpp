@@ -20,6 +20,9 @@ Cycle::Cycle() {
 }
 
 void Cycle::Tick() {
+	if (!associated) {
+		return;
+	}
 	//set the bitmap
 	for (LogiLed::KeyName k : affectedKeys) {
 		//lookup the index in the bitmap
@@ -48,9 +51,24 @@ void Cycle::Tick() {
 	OutputDebugString(buf);
 	OutputDebugString(L"\n");*/
 	//set the g keys
+	colorMap->G1 = Color(color.r, color.g, color.b);
+	colorMap->G2 = Color(color.r, color.g, color.b);
+	colorMap->G3 = Color(color.r, color.g, color.b);
+	colorMap->G4 = Color(color.r, color.g, color.b);
+	colorMap->G5 = Color(color.r, color.g, color.b);
+	colorMap->G6 = Color(color.r, color.g, color.b);
+	colorMap->G7 = Color(color.r, color.g, color.b);
+	colorMap->G8 = Color(color.r, color.g, color.b);
+	colorMap->G9 = Color(color.r, color.g, color.b);
 	//set the badge
+	colorMap->Badge = Color(color.r, color.g, color.b);
 	//set the logo
+	colorMap->Logo = Color(color.r, color.g, color.b);
 	//set the mouse
+	colorMap->Mouse0 = Color(color.r, color.g, color.b);
+	colorMap->Mouse1 = Color(color.r, color.g, color.b);
+
+	//increment colors
 	if (cycleCounter == 0) {
 		if (color.g + delta >= 255) {	//increase green
 			color.g = 255;

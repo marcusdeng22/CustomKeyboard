@@ -28,7 +28,10 @@ void ProfileColor::SendColor() {
 		OutputDebugString(buf);
 		OutputDebugString(L"\n");*/
 		//unsigned char* mapping = &(*bitmap)[0];
+		//color the bitmap
 		LogiLedSetLightingFromBitmap(&(*colorMapping->bitmap)[0]);
+		//color the G keys
+		LogiLedSetLightingForKeyWithKeyName(LogiLed::KeyName::G_1, colorMapping->G1.r, colorMapping->G1.g, colorMapping->G1.b);
 		LogiLedSetLightingForTargetZone(LogiLed::Mouse, 0, 100, 100, 100);	//dpi indicators
 		LogiLedSetLightingForTargetZone(LogiLed::Mouse, 1, 100, 100, 100);	//logo
 		Sleep(ProfileColor::tick);

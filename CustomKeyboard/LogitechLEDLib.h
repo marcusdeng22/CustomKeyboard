@@ -25,7 +25,8 @@
 
 #define LOGI_DEVICETYPE_ALL (LOGI_DEVICETYPE_MONOCHROME | LOGI_DEVICETYPE_RGB | LOGI_DEVICETYPE_PERKEY_RGB)
 
-#include "map"
+#include <map>
+#include "Color.h"
 
 namespace LogiLed
 {
@@ -370,6 +371,9 @@ namespace LogiLed
         {KeyName::NUM_ZERO, 492},
         {KeyName::NUM_PERIOD, 496}
     };
+    const std::map<KeyName, int> extraKeyIndex = {
+        {KeyName::G_1, 0}
+    };
 
     typedef enum
     {
@@ -380,6 +384,26 @@ namespace LogiLed
         Speaker                 = 0xe
     }DeviceType;
 }
+
+
+struct ColorMap {
+    std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_LED_BITMAP_SIZE);
+    Color G1;
+    Color G2;
+    Color G3;
+    Color G4;
+    Color G5;
+    Color G6;
+    Color G7;
+    Color G8;
+    Color G9;
+    Color Badge;
+    Color Logo;
+    Color Mouse0;
+    Color Mouse1;
+
+    ColorMap() : G1(0), G2(0), G3(0), G4(0), G5(0), G6(0), G7(0), G8(0), G9(0), Badge(0), Logo(0), Mouse0(0), Mouse1(0) {}
+};
 
 bool LogiLedInit();
 bool LogiLedInitWithName(const char name[]);
@@ -421,5 +445,18 @@ bool LogiLedStopEffectsOnKey(LogiLed::KeyName keyName);
 
 //Zonal functions => only apply to devices with zones.
 bool LogiLedSetLightingForTargetZone(LogiLed::DeviceType deviceType, int zone, int redPercentage, int greenPercentage, int bluePercentage);
+
+//overloaded functions to apply a Color object
+bool LogiLedSetLighting(Color& c);
+bool LogiLedFlashLighting(Color& c, int msDur, int msInt);
+bool LogiLedPulseLighting(Color& c, int msDur, int msInt);
+
+bool LogiLedSetLightingForKeyWithScanCode(int keyCode, Color& c);
+bool LogiLedSetLightingForKeyWithHidCode(int keyCode, Color& c);
+bool LogiLedSetLightingForKeyWithQuartzCode(int keyCode, Color& c);
+bool LogiLedSetLightingForKeyWithKeyName(LogiLed::KeyName keyName, Color& c);
+
+bool LogiLedFlashSingleKey(LogiLed::KeyName keyName, Color& c, int msDur, int msInt);
+bool LogiLedPulseSingleKey(LogiLed::KeyName keyName, Color& c1, Color& c2, int msDur, int msInt);
 
 void LogiLedShutdown();

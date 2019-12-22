@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "LogitechLEDLib.h"
+//#include "LogitechLEDLib.h"
+#include <math.h>
 
 typedef enum class Mode {
 	RGB,
@@ -9,8 +10,8 @@ typedef enum class Mode {
 } Mode;
 
 class Color {	//rgb on a scale of 0-255
-private:
-	Mode mode = Mode::RGB;
+//private:
+	//Mode mode = Mode::RGB;
 public:
 	unsigned char r, g, b, a;
 
@@ -35,53 +36,97 @@ public:
 		this->a = a;
 	}
 
+	//black color
 	Color(int a) {
 		this->r = 0;
 		this->g = 0;
 		this->b = 0;
-		this->a = 100;
-		this->mode = Mode::PER;
+		this->a = 255;
 	}
 
-	Mode Mode() {
+	//converts R 0-255 to percent 0-100
+	int convR() {
+		return (int)(r / 255.0 * 100 + 0.5);
+	}
+
+	//converts G 0-255 to percent 0-100
+	int convG() {
+		return (int)(g / 255.0 * 100 + 0.5);
+	}
+
+	//converts B 0-255 to percent 0-100
+	int convB() {
+		return (int)(b / 255.0 * 100 + 0.5);
+	}
+
+	//converts A 0-255 to percent 0-100
+	int convA() {
+		return (int)(a / 255.0 * 100 + 0.5);
+	}
+
+	//returns a percent 0-1 of R
+	double perR() {
+		return r / 255.0;
+	}
+
+	//returns a percent 0-1 of G
+	double perG() {
+		return g / 255.0;
+	}
+
+	//returns a percent 0-1 of B
+	double perB() {
+		return b / 255.0;
+	}
+
+	//returns a percent 0-1 of A
+	double perA() {
+		return a / 255.0;
+	}
+
+	//overloaded toRGB() with a black matte
+	Color toRGB() {
+		Color t(0);
+		return toRGB(t);
+	}
+
+	//converts the RGBA value to RGB; the alpha value stored in the return variable is not accurate
+	//the result is intended for one time use only
+	Color toRGB(Color& matte) {
+		double alpha = perA();
+		unsigned char t_r, t_g, t_b;
+		t_r = (unsigned char)round(255 * (((1 - alpha) * matte.perR()) + (alpha * perR())));
+		t_g = (unsigned char)round(255 * (((1 - alpha) * matte.perG()) + (alpha * perG())));
+		t_b = (unsigned char)round(255 * (((1 - alpha) * matte.perB()) + (alpha * perB())));
+		if (t_r > 255) { t_r = 255; }
+		if (t_g > 255) { t_g = 255; }
+		if (t_b > 255) { t_b = 255; }
+		Color c(t_r, t_g, t_b);
+		return c;
+	}
+
+	/*Mode Mode() {
 		return mode;
-	}
+	}*/
 
-	void Convert() {
-		if (mode == Mode::RGB) {
-			mode = Mode::PER;
-			//convert to percentage
-			r = (unsigned char)(r / 255.0 * 100 + 0.5);
-			g = (unsigned char)(g / 255.0 * 100 + 0.5);
-			b = (unsigned char)(b / 255.0 * 100 + 0.5);
-			a = (unsigned char)(a / 255.0 * 100 + 0.5);
-		}
-		else {
-			mode = Mode::RGB;
-			//convert to RGB
-			r = (unsigned char)(r / 100.0 * 255 + 0.5);
-			g = (unsigned char)(g / 100.0 * 255 + 0.5);
-			b = (unsigned char)(b / 100.0 * 255 + 0.5);
-			a = (unsigned char)(a / 100.0 * 255 + 0.5);
-		}
-	}
+	//void Convert() {
+	//	if (mode == Mode::RGB) {
+	//		mode = Mode::PER;
+	//		//convert to percentage
+	//		r = (unsigned char)(r / 255.0 * 100 + 0.5);
+	//		g = (unsigned char)(g / 255.0 * 100 + 0.5);
+	//		b = (unsigned char)(b / 255.0 * 100 + 0.5);
+	//		a = (unsigned char)(a / 255.0 * 100 + 0.5);
+	//	}
+	//	else {
+	//		mode = Mode::RGB;
+	//		//convert to RGB
+	//		r = (unsigned char)(r / 100.0 * 255 + 0.5);
+	//		g = (unsigned char)(g / 100.0 * 255 + 0.5);
+	//		b = (unsigned char)(b / 100.0 * 255 + 0.5);
+	//		a = (unsigned char)(a / 100.0 * 255 + 0.5);
+	//	}
+	//}
 };
 
-struct ColorMap {
-	std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_LED_BITMAP_SIZE);
-	Color G1;
-	Color G2;
-	Color G3;
-	Color G4;
-	Color G5;
-	Color G6;
-	Color G7;
-	Color G8;
-	Color G9;
-	Color Badge;
-	Color Logo;
-	Color Mouse0;
-	Color Mouse1;
 
-	ColorMap() : G1(0), G2(0), G3(0), G4(0), G5(0), G6(0), G7(0), G8(0), G9(0), Badge(0), Logo(0), Mouse0(0), Mouse1(0) {}
-};

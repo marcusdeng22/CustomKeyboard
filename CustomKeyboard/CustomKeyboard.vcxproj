@@ -168,8 +168,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Color.cpp" />
     <ClCompile Include="CustomKeyboard.cpp" />
     <ClCompile Include="Layers\Cycle.cpp" />
+    <ClCompile Include="LogitechLEDLib.cpp" />
     <ClCompile Include="ProfileColor.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
