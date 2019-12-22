@@ -12,7 +12,8 @@ private:
 	int tick = 20;	//update keyboard 50 times a second
 	//unsigned char bitmap[LOGI_LED_BITMAP_SIZE] = { 0 };
 	//std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_LED_BITMAP_SIZE);
-	ColorMap *colorMapping = new ColorMap();
+	//ColorMap *colorMapping = new ColorMap();
+	std::vector<unsigned char>* colorVector = new std::vector<unsigned char>(LOGI_COLORMAP_FULL_SIZE);	//each 4 indices is BGRA value
 
 public:
 	ProfileColor() {
@@ -22,7 +23,8 @@ public:
 	~ProfileColor() {
 		OutputDebugString(L"cleaning bitmap pointer\n");
 		//delete bitmap;
-		delete colorMapping;
+		//delete colorMapping;
+		delete colorVector;
 	}
 
 	/*unsigned char* GetBitmap() {
@@ -43,7 +45,8 @@ public:
 	}*/
 
 	void AddLayer(Layer* l) {
-		l->Associate(colorMapping);
+		//l->Associate(colorMapping);
+		l->Associate(colorVector);
 		layers.push_back(l);
 	}
 

@@ -13,6 +13,9 @@
 
 #define LOGI_LED_BITMAP_SIZE (LOGI_LED_BITMAP_WIDTH*LOGI_LED_BITMAP_HEIGHT*LOGI_LED_BITMAP_BYTES_PER_KEY)
 
+#define LOGI_COLORMAP_FULL_SIZE 556   //LOGI_LED_BITMP_SIZE + 4*(9 G Keys + badge + logo + 2 mouse zones)
+#define LOGI_NUMBER_KEYS 117
+
 #define LOGI_LED_DURATION_INFINITE 0
 
 #define LOGI_DEVICETYPE_MONOCHROME_ORD  0
@@ -26,6 +29,7 @@
 #define LOGI_DEVICETYPE_ALL (LOGI_DEVICETYPE_MONOCHROME | LOGI_DEVICETYPE_RGB | LOGI_DEVICETYPE_PERKEY_RGB)
 
 #include <map>
+#include <list>
 #include "Color.h"
 
 namespace LogiLed
@@ -145,7 +149,9 @@ namespace LogiLed
         G_8                     = 0xFFF8,
         G_9                     = 0xFFF9,
         G_LOGO                  = 0xFFFF1,
-        G_BADGE                 = 0xFFFF2
+        G_BADGE                 = 0xFFFF2,
+        MOUSE_Z0                = 0xFFFF3,  //not a key; need to check and set the target zone
+        MOUSE_Z1                = 0xFFFF4   //not a key; need to check and set the target zone
 
     }KeyName;
     static const KeyName allKeys[] = {
@@ -263,7 +269,9 @@ namespace LogiLed
         KeyName::G_8,
         KeyName::G_9,
         KeyName::G_LOGO,
-        KeyName::G_BADGE
+        KeyName::G_BADGE,
+        KeyName::MOUSE_Z0,
+        KeyName::MOUSE_Z1
     };
     const std::map<KeyName, int> bitmapIndex = {    //note that the g keys, badge, and logo are not in bitmap
         {KeyName::ESC, 0},
@@ -369,14 +377,47 @@ namespace LogiLed
         {KeyName::ARROW_DOWN, 484},
         {KeyName::ARROW_RIGHT, 488},
         {KeyName::NUM_ZERO, 492},
-        {KeyName::NUM_PERIOD, 496}
+        {KeyName::NUM_PERIOD, 496},
+        //define the indices outside of the bitmap zone; only really need first 3 indices to store RGB since they are not in bitmap
+        {KeyName::G_1, 504},
+        {KeyName::G_2, 508},
+        {KeyName::G_3, 512},
+        {KeyName::G_4, 516},
+        {KeyName::G_5, 520},
+        {KeyName::G_6, 524},
+        {KeyName::G_7, 528},
+        {KeyName::G_8, 532},
+        {KeyName::G_9, 536},
+        {KeyName::G_LOGO, 540},
+        {KeyName::G_BADGE, 544},
+        {KeyName::MOUSE_Z0, 548},
+        {KeyName::MOUSE_Z1, 552}
+    };
+
+    const std::list<KeyName> NotInBitmap({
+        KeyName::G_1,
+        KeyName::G_2,
+        KeyName::G_3,
+        KeyName::G_4,
+        KeyName::G_5,
+        KeyName::G_6,
+        KeyName::G_7,
+        KeyName::G_8,
+        KeyName::G_9,
+        KeyName::G_LOGO,
+        KeyName::G_BADGE,
+        KeyName::MOUSE_Z0,
+        KeyName::MOUSE_Z1
+        });
+
+    /*typedef enum class ExtraKey {
+
     };
     const std::map<KeyName, int> extraKeyIndex = {
         {KeyName::G_1, 0}
-    };
+    };*/
 
-    typedef enum
-    {
+    typedef enum class DeviceType {
         Keyboard                = 0x0,
         Mouse                   = 0x3,
         Mousemat                = 0x4,
@@ -386,24 +427,24 @@ namespace LogiLed
 }
 
 
-struct ColorMap {
-    std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_LED_BITMAP_SIZE);
-    Color G1;
-    Color G2;
-    Color G3;
-    Color G4;
-    Color G5;
-    Color G6;
-    Color G7;
-    Color G8;
-    Color G9;
-    Color Badge;
-    Color Logo;
-    Color Mouse0;
-    Color Mouse1;
-
-    ColorMap() : G1(0), G2(0), G3(0), G4(0), G5(0), G6(0), G7(0), G8(0), G9(0), Badge(0), Logo(0), Mouse0(0), Mouse1(0) {}
-};
+//struct ColorMap {
+//    std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_BITMAP_FULL_SIZE);
+//    /*Color G1;
+//    Color G2;
+//    Color G3;
+//    Color G4;
+//    Color G5;
+//    Color G6;
+//    Color G7;
+//    Color G8;
+//    Color G9;
+//    Color Badge;
+//    Color Logo;
+//    Color Mouse0;
+//    Color Mouse1;
+//
+//    ColorMap() : G1(0), G2(0), G3(0), G4(0), G5(0), G6(0), G7(0), G8(0), G9(0), Badge(0), Logo(0), Mouse0(0), Mouse1(0) {}*/
+//};
 
 bool LogiLedInit();
 bool LogiLedInitWithName(const char name[]);
@@ -458,5 +499,7 @@ bool LogiLedSetLightingForKeyWithKeyName(LogiLed::KeyName keyName, Color& c);
 
 bool LogiLedFlashSingleKey(LogiLed::KeyName keyName, Color& c, int msDur, int msInt);
 bool LogiLedPulseSingleKey(LogiLed::KeyName keyName, Color& c1, Color& c2, int msDur, int msInt);
+
+bool LogiLedSetLightingForTargetZone(LogiLed::DeviceType device, int zone, Color& c);
 
 void LogiLedShutdown();

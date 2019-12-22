@@ -15,15 +15,18 @@ protected:
 	int delta = 5;
 	Condition condition = Condition::None;
 	std::list<LogiLed::KeyName> affectedKeys;
+	//std::list<LogiLed::ExtraKeys> affectedExtras;
 	Color color;
 	//unsigned char *bitmap;
 	//std::vector<unsigned char>* bitmap;
-	ColorMap *colorMap = nullptr;
+	//ColorMap *colorMap = nullptr;
+	std::vector<unsigned char>* colorVector = nullptr;
 	bool associated = false;
 
 public:
-	void Associate(ColorMap *ptr) {
-		colorMap = ptr;
+	//void Associate(ColorMap *ptr) {
+	void Associate(std::vector<unsigned char>* ptr) {
+		colorVector = ptr;
 		associated = true;
 	}
 

@@ -47,3 +47,8 @@ bool LogiLedPulseSingleKey(LogiLed::KeyName keyName, Color& color1, Color& color
 	Color c2 = color2.toRGB();
 	return LogiLedPulseSingleKey(keyName, c1.convR(), c1.convG(), c1.convB(), c2.convR(), c2.convG(), c2.convB(), msDur, msInt);
 }
+
+bool LogiLedSetLightingForTargetZone(LogiLed::DeviceType device, int zone, Color& color) {
+	Color c = color.toRGB();
+	return LogiLedSetLightingForTargetZone(device, zone, c.convR(), c.convG(), c.convB());
+}

@@ -14,9 +14,10 @@ Cycle::Cycle() {
 	OutputDebugString(L"cycle color bitmap addr: ");
 	OutputDebugString(buf);
 	OutputDebugString(L"\n");*/
-	for (auto const & k : LogiLed::bitmapIndex) {
+	for (auto const & k : LogiLed::bitmapIndex) {	//change this to join from all keys
 		affectedKeys.push_back(k.first);
 	}
+	//affectedKeys(LogiLed::allKeys, LOGI_NUMBER_KEYS);
 }
 
 void Cycle::Tick() {
@@ -27,14 +28,14 @@ void Cycle::Tick() {
 	for (LogiLed::KeyName k : affectedKeys) {
 		//lookup the index in the bitmap
 		size_t index = LogiLed::bitmapIndex.at(k);
-		/*(*bitmap)[index] = color.b;
-		(*bitmap)[index + 1] = color.g;
-		(*bitmap)[index + 2] = color.r;
-		(*bitmap)[index + 3] = color.a;*/
-		colorMap->bitmap->at(index) = color.b;
+		(*colorVector)[index] = color.b;
+		(*colorVector)[index + 1] = color.g;
+		(*colorVector)[index + 2] = color.r;
+		(*colorVector)[index + 3] = color.a;
+		/*colorMap->bitmap->at(index) = color.b;
 		colorMap->bitmap->at(index + 1) = color.g;
 		colorMap->bitmap->at(index + 2) = color.r;
-		colorMap->bitmap->at(index + 3) = color.a;
+		colorMap->bitmap->at(index + 3) = color.a;*/
 	}
 	/*wchar_t buf[256];
 	OutputDebugString(L"values from tick\n");
@@ -50,23 +51,23 @@ void Cycle::Tick() {
 	wsprintf(buf, L"%d", (*bitmap)[3]);
 	OutputDebugString(buf);
 	OutputDebugString(L"\n");*/
-	//set the g keys
-	colorMap->G1 = Color(color.r, color.g, color.b);
-	colorMap->G2 = Color(color.r, color.g, color.b);
-	colorMap->G3 = Color(color.r, color.g, color.b);
-	colorMap->G4 = Color(color.r, color.g, color.b);
-	colorMap->G5 = Color(color.r, color.g, color.b);
-	colorMap->G6 = Color(color.r, color.g, color.b);
-	colorMap->G7 = Color(color.r, color.g, color.b);
-	colorMap->G8 = Color(color.r, color.g, color.b);
-	colorMap->G9 = Color(color.r, color.g, color.b);
-	//set the badge
-	colorMap->Badge = Color(color.r, color.g, color.b);
-	//set the logo
-	colorMap->Logo = Color(color.r, color.g, color.b);
-	//set the mouse
-	colorMap->Mouse0 = Color(color.r, color.g, color.b);
-	colorMap->Mouse1 = Color(color.r, color.g, color.b);
+	////set the g keys
+	//colorMap->G1 = Color(color.r, color.g, color.b);
+	//colorMap->G2 = Color(color.r, color.g, color.b);
+	//colorMap->G3 = Color(color.r, color.g, color.b);
+	//colorMap->G4 = Color(color.r, color.g, color.b);
+	//colorMap->G5 = Color(color.r, color.g, color.b);
+	//colorMap->G6 = Color(color.r, color.g, color.b);
+	//colorMap->G7 = Color(color.r, color.g, color.b);
+	//colorMap->G8 = Color(color.r, color.g, color.b);
+	//colorMap->G9 = Color(color.r, color.g, color.b);
+	////set the badge
+	//colorMap->Badge = Color(color.r, color.g, color.b);
+	////set the logo
+	//colorMap->Logo = Color(color.r, color.g, color.b);
+	////set the mouse
+	//colorMap->Mouse0 = Color(color.r, color.g, color.b);
+	//colorMap->Mouse1 = Color(color.r, color.g, color.b);
 
 	//increment colors
 	if (cycleCounter == 0) {
