@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="CustomKeyboard.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Layers\Cycle.cpp">
+      <Filter>Layers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CustomKeyboard.h" />
+    <ClInclude Include="PolicyConfig.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Layers\Layer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="Layers\Cycle.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Layers">
+      <UniqueIdentifier>{45a26272-ba5f-4d09-8de7-0f4e49c51423}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
