@@ -27,8 +27,8 @@ void ProfileColor::SendColor() {
 		wsprintf(buf, L"%d", bitmap[3]);
 		OutputDebugString(buf);
 		OutputDebugString(L"\n");*/
-		unsigned char* mapping = &(*bitmap)[0];
-		LogiLedSetLightingFromBitmap(mapping);
+		//unsigned char* mapping = &(*bitmap)[0];
+		LogiLedSetLightingFromBitmap(&(*colorMapping->bitmap)[0]);
 		LogiLedSetLightingForTargetZone(LogiLed::Mouse, 0, 100, 100, 100);	//dpi indicators
 		LogiLedSetLightingForTargetZone(LogiLed::Mouse, 1, 100, 100, 100);	//logo
 		Sleep(ProfileColor::tick);

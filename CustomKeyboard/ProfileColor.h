@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "Layers/Layer.h"
 #include "LogitechLEDLib.h"
+#include "Color.h"
 #include <vector>
 #include <thread>
 
@@ -10,7 +11,8 @@ private:
 	std::vector<Layer*> layers;
 	int tick = 20;	//update keyboard 50 times a second
 	//unsigned char bitmap[LOGI_LED_BITMAP_SIZE] = { 0 };
-	std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_LED_BITMAP_SIZE);
+	//std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_LED_BITMAP_SIZE);
+	ColorMap *colorMapping = new ColorMap();
 
 public:
 	ProfileColor() {
@@ -19,7 +21,8 @@ public:
 
 	~ProfileColor() {
 		OutputDebugString(L"cleaning bitmap pointer\n");
-		delete bitmap;
+		//delete bitmap;
+		delete colorMapping;
 	}
 
 	/*unsigned char* GetBitmap() {
@@ -31,11 +34,16 @@ public:
 		return bitmap;
 	}*/
 
-	std::vector<unsigned char>* GetBitmap() {
+	/*std::vector<unsigned char>* GetBitmap() {
 		return bitmap;
-	}
+	}*/
+
+	/*ColorMap* GetColorMap() {
+		return colorMapping;
+	}*/
 
 	void AddLayer(Layer* l) {
+		l->Associate(colorMapping);
 		layers.push_back(l);
 	}
 

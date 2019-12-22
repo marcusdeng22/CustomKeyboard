@@ -12,14 +12,19 @@ enum class Condition {
 
 class Layer {
 protected:
-	int delta = 2;
-	Condition condition;
+	int delta = 5;
+	Condition condition = Condition::None;
 	std::list<LogiLed::KeyName> affectedKeys;
 	Color color;
 	//unsigned char *bitmap;
-	std::vector<unsigned char>* bitmap;
+	//std::vector<unsigned char>* bitmap;
+	ColorMap *colorMap = nullptr;
 
 public:
+	void Associate(ColorMap *ptr) {
+		colorMap = ptr;
+	}
+
 	void SetCondition(Condition c) {
 		condition = c;
 	}

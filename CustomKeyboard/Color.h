@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include "LogitechLEDLib.h"
+
 typedef enum class Mode {
 	RGB,
 	PER
@@ -32,6 +35,14 @@ public:
 		this->a = a;
 	}
 
+	Color(int a) {
+		this->r = 0;
+		this->g = 0;
+		this->b = 0;
+		this->a = 100;
+		this->mode = Mode::PER;
+	}
+
 	Mode Mode() {
 		return mode;
 	}
@@ -54,4 +65,23 @@ public:
 			a = (unsigned char)(a / 100.0 * 255 + 0.5);
 		}
 	}
+};
+
+struct ColorMap {
+	std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_LED_BITMAP_SIZE);
+	Color G1;
+	Color G2;
+	Color G3;
+	Color G4;
+	Color G5;
+	Color G6;
+	Color G7;
+	Color G8;
+	Color G9;
+	Color Badge;
+	Color Logo;
+	Color Mouse0;
+	Color Mouse1;
+
+	ColorMap() : G1(0), G2(0), G3(0), G4(0), G5(0), G6(0), G7(0), G8(0), G9(0), Badge(0), Logo(0), Mouse0(0), Mouse1(0) {}
 };

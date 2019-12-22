@@ -4,15 +4,16 @@
 #include <map>
 #include <vector>
 
+Cycle::Cycle() {
 //Cycle::Cycle(unsigned char* bitmap) {
-Cycle::Cycle(std::vector<unsigned char> * bitmap) {
+//Cycle::Cycle(std::vector<unsigned char> * bitmap) {
 	color = Color(255, 0, 0);	//start on red
-	this->bitmap = bitmap;
+	/*this->bitmap = bitmap;
 	wchar_t buf[256];
 	wsprintf(buf, L"%x", (this->bitmap));
 	OutputDebugString(L"cycle color bitmap addr: ");
 	OutputDebugString(buf);
-	OutputDebugString(L"\n");
+	OutputDebugString(L"\n");*/
 	for (auto const & k : LogiLed::bitmapIndex) {
 		affectedKeys.push_back(k.first);
 	}
@@ -22,11 +23,15 @@ void Cycle::Tick() {
 	//set the bitmap
 	for (LogiLed::KeyName k : affectedKeys) {
 		//lookup the index in the bitmap
-		int index = LogiLed::bitmapIndex.at(k);
-		(*bitmap)[index] = color.b;
+		size_t index = LogiLed::bitmapIndex.at(k);
+		/*(*bitmap)[index] = color.b;
 		(*bitmap)[index + 1] = color.g;
 		(*bitmap)[index + 2] = color.r;
-		(*bitmap)[index + 3] = color.a;
+		(*bitmap)[index + 3] = color.a;*/
+		colorMap->bitmap->at(index) = color.b;
+		colorMap->bitmap->at(index + 1) = color.g;
+		colorMap->bitmap->at(index + 2) = color.r;
+		colorMap->bitmap->at(index + 3) = color.a;
 	}
 	/*wchar_t buf[256];
 	OutputDebugString(L"values from tick\n");

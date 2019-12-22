@@ -8,7 +8,8 @@ private:
 	int cycleCounter = 0;
 
 public:
+	Cycle();
 	//Cycle(unsigned char* bitmap);
-	Cycle(std::vector<unsigned char>* bitmap);
+	//Cycle(std::vector<unsigned char>* bitmap);
 	void Tick();
 };
