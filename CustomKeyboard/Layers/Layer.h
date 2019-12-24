@@ -32,17 +32,17 @@ public:
 		associated = true;
 	}
 
-	void SetCondition(Condition c) {
+	/*void SetCondition(Condition c) {
 		condition = c;
-	}
+	}*/
 
 	Condition GetCondition() {
 		return condition;
 	}
 
-	bool ConditionMet() {
-		return true;	//TODO: implement condition checking
-	}
+	//bool ConditionMet() {
+	//	return true;	//TODO: implement condition checking
+	//}
 
 	void SetDelta(int v) {
 		delta = v;

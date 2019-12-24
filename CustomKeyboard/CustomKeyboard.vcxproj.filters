@@ -11,6 +11,10 @@
     <ClCompile Include="Layers\Echo.cpp">
       <Filter>Layers</Filter>
     </ClCompile>
+    <ClCompile Include="ProfileColor.cpp" />
+    <ClCompile Include="Layers\Fill.cpp">
+      <Filter>Layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomKeyboard.h" />
@@ -26,6 +30,11 @@
     </ClInclude>
     <ClInclude Include="Color.h" />
     <ClInclude Include="Layers\Echo.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="LogitechLEDLib.h" />
+    <ClInclude Include="ProfileColor.h" />
+    <ClInclude Include="Layers\Fill.h">
       <Filter>Layers</Filter>
     </ClInclude>
   </ItemGroup>
