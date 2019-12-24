@@ -2,6 +2,7 @@
 #include "Fill.h"
 
 void Fill::updateDevice() {
+	initialized = false;
 	if (condition == Condition::MicMuted) {
 		HRESULT hr = CoInitialize(NULL);
 		if (SUCCEEDED(hr)) {
@@ -22,7 +23,7 @@ void Fill::updateDevice() {
 }
 
 Fill::Fill(Condition c) {
-	initialized = false;
+	micVolume = nullptr;
 	condition = c;
 	if (condition == Condition::MicMuted) {
 		updateDevice();
@@ -69,11 +70,11 @@ void Fill::paint() {
 }
 
 void Fill::Tick() {
-	if (!associated || !initialized) {
+	if (!associated) {
 		return;
 	}
 
-	if (condition == Condition::MicMuted) {
+	if (condition == Condition::MicMuted && initialized) {
 		BOOL muted;
 		micVolume->GetMute(&muted);
 		if (!muted) {
