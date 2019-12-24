@@ -9,7 +9,8 @@
 class ProfileColor {
 private:
 	std::vector<Layer*> layers;
-	int tick = 20;	//update keyboard 50 times a second
+	//int tick = 20;	//update keyboard 50 times a second
+	int tick;
 	//unsigned char bitmap[LOGI_LED_BITMAP_SIZE] = { 0 };
 	//std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_LED_BITMAP_SIZE);
 	//ColorMap *colorMapping = new ColorMap();
@@ -18,6 +19,7 @@ private:
 public:
 	ProfileColor() {
 		//bitmap->resize(LOGI_LED_BITMAP_SIZE, 0);
+		tick = 20;
 	}
 
 	~ProfileColor() {

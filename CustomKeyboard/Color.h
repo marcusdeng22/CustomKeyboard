@@ -4,10 +4,10 @@
 //#include "LogitechLEDLib.h"
 #include <math.h>
 
-typedef enum class Mode {
-	RGB,
-	PER
-} Mode;
+//typedef enum class Mode {
+//	RGB,
+//	PER
+//} Mode;
 
 class Color {	//rgb on a scale of 0-255
 //private:
@@ -94,13 +94,16 @@ public:
 	//the result is intended for one time use only
 	Color toRGB(Color& matte) {
 		double alpha = perA();
-		unsigned char t_r, t_g, t_b;
-		t_r = (unsigned char)round(255 * (((1 - alpha) * matte.perR()) + (alpha * perR())));
-		t_g = (unsigned char)round(255 * (((1 - alpha) * matte.perG()) + (alpha * perG())));
-		t_b = (unsigned char)round(255 * (((1 - alpha) * matte.perB()) + (alpha * perB())));
+		int t_r, t_g, t_b;
+		t_r = (int)round(255 * (((1 - alpha) * matte.perR()) + (alpha * perR())));
+		t_g = (int)round(255 * (((1 - alpha) * matte.perG()) + (alpha * perG())));
+		t_b = (int)round(255 * (((1 - alpha) * matte.perB()) + (alpha * perB())));
 		if (t_r > 255) { t_r = 255; }
 		if (t_g > 255) { t_g = 255; }
 		if (t_b > 255) { t_b = 255; }
+		if (t_r < 0) { t_r = 0; }
+		if (t_g < 0) { t_g = 0; }
+		if (t_b < 0) { t_b = 0; }
 		Color c(t_r, t_g, t_b);
 		return c;
 	}

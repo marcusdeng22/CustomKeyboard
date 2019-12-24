@@ -5,6 +5,10 @@
 #include <vector>
 
 Cycle::Cycle() {
+	cycleCounter = 0;
+}
+
+void Cycle::initialize() {
 //Cycle::Cycle(unsigned char* bitmap) {
 //Cycle::Cycle(std::vector<unsigned char> * bitmap) {
 	color = Color(255, 0, 0);	//start on red
@@ -21,6 +25,7 @@ Cycle::Cycle() {
 }
 
 void Cycle::Tick() {
+	//OutputDebugString(L"Cycle tick\n");
 	if (!associated) {
 		return;
 	}

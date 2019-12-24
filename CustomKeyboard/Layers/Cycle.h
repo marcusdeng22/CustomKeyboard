@@ -5,10 +5,11 @@
 
 class Cycle : public Layer {
 private:
-	int cycleCounter = 0;
+	int cycleCounter;
 
 public:
 	Cycle();
+	void initialize();
 	//Cycle(unsigned char* bitmap);
 	//Cycle(std::vector<unsigned char>* bitmap);
 	void Tick();

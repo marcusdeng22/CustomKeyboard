@@ -159,6 +159,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="CustomKeyboard.h" />
     <ClInclude Include="Layers\Cycle.h" />
+    <ClInclude Include="Layers\Echo.h" />
     <ClInclude Include="Layers\Layer.h" />
     <ClInclude Include="LogitechLEDLib.h" />
     <ClInclude Include="PolicyConfig.h" />
@@ -171,6 +172,7 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="CustomKeyboard.cpp" />
     <ClCompile Include="Layers\Cycle.cpp" />
+    <ClCompile Include="Layers\Echo.cpp" />
     <ClCompile Include="LogitechLEDLib.cpp" />
     <ClCompile Include="ProfileColor.cpp" />
     <ClCompile Include="stdafx.cpp">

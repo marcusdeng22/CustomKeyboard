@@ -24,6 +24,8 @@ protected:
 	bool associated = false;
 
 public:
+	virtual void initialize() = 0;
+
 	//void Associate(ColorMap *ptr) {
 	void Associate(std::vector<unsigned char>* ptr) {
 		colorVector = ptr;
@@ -36,6 +38,10 @@ public:
 
 	Condition GetCondition() {
 		return condition;
+	}
+
+	bool ConditionMet() {
+		return true;	//TODO: implement condition checking
 	}
 
 	void SetDelta(int v) {

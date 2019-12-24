@@ -8,6 +8,9 @@
     </ClCompile>
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="LogitechLEDLib.cpp" />
+    <ClCompile Include="Layers\Echo.cpp">
+      <Filter>Layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomKeyboard.h" />
@@ -22,6 +25,9 @@
       <Filter>Layers</Filter>
     </ClInclude>
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Layers\Echo.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.md" />
