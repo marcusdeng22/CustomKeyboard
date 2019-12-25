@@ -28,14 +28,9 @@ private:
 	double delta;
 
 public:
-	std::string name = "echo";
-	//Echo();
-	//Echo(int d) {}
 	Echo(double d = 0.01, Color start = Color(255, 255, 255), Color end = Color());
-	/*void initialize();
-	void initialize(Color start, Color end = Color());*/
-	void RegisterKey(LogiLed::KeyName k);
-	void RemoveKey(LogiLed::KeyName k);
+	void registerKey(LogiLed::KeyName k);
+	void removeKey(LogiLed::KeyName k);
 	virtual void startKey(LogiLed::KeyName k) override;
-	void Tick(std::vector<unsigned char>&);
+	void tick(std::vector<unsigned char>&);
 };

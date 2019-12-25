@@ -24,7 +24,6 @@ void Fill::updateDevice() {
 }
 
 Fill::Fill(Condition cond, Color c) {
-	OutputDebugString(L"first fill constructor\n");
 	micVolume = nullptr;
 	condition = cond;
 	if (condition == Condition::MicMuted) {
@@ -40,7 +39,6 @@ Fill::Fill(Condition cond, Color c) {
 }
 
 Fill::Fill(LogiLed::KeyName k, Condition cond, Color c) {
-	OutputDebugString(L"second fill constructor\n");
 	micVolume = nullptr;
 	condition = cond;
 	if (condition == Condition::MicMuted) {
@@ -50,11 +48,10 @@ Fill::Fill(LogiLed::KeyName k, Condition cond, Color c) {
 		initialized = true;
 	}
 	color = c;
-	RegisterKey(k);
+	registerKey(k);
 }
 
 Fill::Fill(std::list<LogiLed::KeyName> l, Condition cond, Color c) {
-	OutputDebugString(L"third fill constructor\n");
 	micVolume = nullptr;
 	condition = cond;
 	if (condition == Condition::MicMuted) {
@@ -67,55 +64,16 @@ Fill::Fill(std::list<LogiLed::KeyName> l, Condition cond, Color c) {
 	affectedKeys = l;
 }
 
-
-//Fill::Fill(Condition c) {
-//	micVolume = nullptr;
-//	condition = c;
-//	if (condition == Condition::MicMuted) {
-//		updateDevice();
-//	}
-//	else {
-//		initialized = true;
-//	}
-//}
-
 Fill::~Fill() {
 	if (condition == Condition::MicMuted) {
-		//delete micVolume;
 		CoUninitialize();
 	}
 }
-
-//void Fill::initialize() {
-//	initialize(Color(255, 255, 255));	//default to white
-//}
-//
-//void Fill::initialize(Color c) {
-//	color = c;
-//	for (auto const& k : LogiLed::bitmapIndex) {	//change this to join from all keys?
-//		affectedKeys.push_back(k.first);
-//	}
-//}
-//
-//void Fill::initialize(LogiLed::KeyName k, Color c) {
-//	color = c;
-//	RegisterKey(k);
-//}
-//
-//void Fill::initialize(std::list<LogiLed::KeyName> l, Color c) {
-//	color = c;
-//	affectedKeys = l;
-//}
 
 void Fill::paint(std::vector<unsigned char>& colorVector) {
 	for (LogiLed::KeyName k : affectedKeys) {
 		//lookup the index in the bitmap
 		size_t index = LogiLed::bitmapIndex.at(k);
-		//fill the bitmap indices
-		//(*colorVector)[index] = color.b;
-		//(*colorVector)[index + 1] = color.g;
-		//(*colorVector)[index + 2] = color.r;
-		//(*colorVector)[index + 3] = color.a;
 		(colorVector)[index] = color.b;
 		(colorVector)[index + 1] = color.g;
 		(colorVector)[index + 2] = color.r;
@@ -123,11 +81,7 @@ void Fill::paint(std::vector<unsigned char>& colorVector) {
 	}
 }
 
-void Fill::Tick(std::vector<unsigned char>& colorVector) {
-	if (!associated) {
-		return;
-	}
-
+void Fill::tick(std::vector<unsigned char>& colorVector) {
 	if (condition == Condition::MicMuted && initialized) {
 		BOOL muted;
 		micVolume->GetMute(&muted);

@@ -396,7 +396,7 @@ namespace LogiLed
         {KeyName::MOUSE_Z0, 548},
         {KeyName::MOUSE_Z1, 552}
     };
-    static const std::list<KeyName> NotInBitmap({
+    static const std::list<KeyName> notInBitmap({
         KeyName::G_1,
         KeyName::G_2,
         KeyName::G_3,

@@ -29,11 +29,4 @@ public:
 			macroMapping.erase(k);
 		}
 	}
-
-	/*Profile& operator = (const Profile & p) {
-		programName = p.programName;
-		macroMapping = p.macroMapping;
-		colorProfile = p.colorProfile;
-		return *this;
-	}*/
 };

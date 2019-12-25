@@ -2,13 +2,7 @@
 #include "Cycle.h"
 #include "LogitechLEDLib.h"
 
-//Cycle::Cycle() {
-//	cycleCounter = 0;
-//	color = Color(255, 0, 0);	//start on red
-//}
-
 Cycle::Cycle(int d) {
-	//Cycle();
 	cycleCounter = 0;
 	delta = d;
 	color = Color(255, 0, 0);
@@ -17,24 +11,11 @@ Cycle::Cycle(int d) {
 	}
 }
 
-//void Cycle::initialize() {
-//	for (auto const & k : LogiLed::bitmapIndex) {	//change this to join from all keys?
-//		affectedKeys.push_back(k.first);
-//	}
-//}
-
-void Cycle::Tick(std::vector<unsigned char>& colorVector) {
-	if (!associated) {
-		return;
-	}
+void Cycle::tick(std::vector<unsigned char>& colorVector) {
 	//set the bitmap
 	for (LogiLed::KeyName k : affectedKeys) {
 		//lookup the index in the bitmap
 		size_t index = LogiLed::bitmapIndex.at(k);
-		/*(*colorVector)[index] = color.b;
-		(*colorVector)[index + 1] = color.g;
-		(*colorVector)[index + 2] = color.r;
-		(*colorVector)[index + 3] = color.a;*/
 		(colorVector)[index] = color.b;
 		(colorVector)[index + 1] = color.g;
 		(colorVector)[index + 2] = color.r;
