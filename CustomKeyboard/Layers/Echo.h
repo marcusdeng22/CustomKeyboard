@@ -29,12 +29,13 @@ private:
 
 public:
 	std::string name = "echo";
-	Echo();
-	Echo(double d);
-	void initialize();
-	void initialize(Color start, Color end = Color());
+	//Echo();
+	//Echo(int d) {}
+	Echo(double d = 0.01, Color start = Color(255, 255, 255), Color end = Color());
+	/*void initialize();
+	void initialize(Color start, Color end = Color());*/
 	void RegisterKey(LogiLed::KeyName k);
 	void RemoveKey(LogiLed::KeyName k);
-	void startKey(LogiLed::KeyName k);
-	void Tick();
+	virtual void startKey(LogiLed::KeyName k) override;
+	void Tick(std::vector<unsigned char>&);
 };

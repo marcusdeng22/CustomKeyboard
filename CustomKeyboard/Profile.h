@@ -30,10 +30,10 @@ public:
 		}
 	}
 
-	Profile& operator = (const Profile & p) {
+	/*Profile& operator = (const Profile & p) {
 		programName = p.programName;
 		macroMapping = p.macroMapping;
 		colorProfile = p.colorProfile;
 		return *this;
-	}
+	}*/
 };

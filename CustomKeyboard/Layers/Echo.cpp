@@ -2,22 +2,28 @@
 #include "Echo.h"
 #include "LogitechLEDLib.h"
 
-Echo::Echo() {
-	delta = 0.01;
-}
-
-Echo::Echo(double d) {
+Echo::Echo(double d, Color start, Color end) {
 	delta = d;
-}
-
-void Echo::initialize() {
-	startColor = Color(255, 255, 255);	//start on white
-}
-
-void Echo::initialize(Color start, Color end) {
 	startColor = start;
 	targetColor = end;
 }
+
+//Echo::Echo() {
+//	delta = 0.01;
+//}
+//
+//Echo::Echo(double d) {
+//	delta = d;
+//}
+//
+//void Echo::initialize() {
+//	startColor = Color(255, 255, 255);	//start on white
+//}
+//
+//void Echo::initialize(Color start, Color end) {
+//	startColor = start;
+//	targetColor = end;
+//}
 
 //override the register key; we don't want to use a list
 void Echo::RegisterKey(LogiLed::KeyName k) {
@@ -39,7 +45,7 @@ void Echo::startKey(LogiLed::KeyName k) {
 	keyMapping.at(k).started = true;
 }
 
-void Echo::Tick() {
+void Echo::Tick(std::vector<unsigned char>& colorVector) {
 	if (!associated) {
 		return;
 	}
@@ -50,15 +56,20 @@ void Echo::Tick() {
 		//if the target color has zero alpha, sample the current value before changing it
 		Color sample = targetColor;
 		if (targetColor.a == 0) {	//sample the background if the target color is transparent
-			sample = Color((*colorVector)[index + 2], (*colorVector)[index + 1], (*colorVector)[index], (*colorVector)[index + 3]);
+			//sample = Color((*colorVector)[index + 2], (*colorVector)[index + 1], (*colorVector)[index], (*colorVector)[index + 3]);
+			sample = Color((colorVector)[index + 2], (colorVector)[index + 1], (colorVector)[index], (colorVector)[index + 3]);
 		}
 		//get the ColorAlpha struct for the key
 		ColorAlpha* ca = &mapping.second;
 		//update the colors
-		(*colorVector)[index] = ca->curColor.b;
-		(*colorVector)[index + 1] = ca->curColor.g;
-		(*colorVector)[index + 2] = ca->curColor.r;
-		(*colorVector)[index + 3] = ca->curColor.a;	//should be 255 since start color should have A=255
+		//(*colorVector)[index] = ca->curColor.b;
+		//(*colorVector)[index + 1] = ca->curColor.g;
+		//(*colorVector)[index + 2] = ca->curColor.r;
+		//(*colorVector)[index + 3] = ca->curColor.a;	//should be 255 since start color should have A=255
+		(colorVector)[index] = ca->curColor.b;
+		(colorVector)[index + 1] = ca->curColor.g;
+		(colorVector)[index + 2] = ca->curColor.r;
+		(colorVector)[index + 3] = ca->curColor.a;	//should be 255 since start color should have A=255
 
 		if (ca->started) {	//start animation
 			if (ca->curAlpha - delta <= 0) {

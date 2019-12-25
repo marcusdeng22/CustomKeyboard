@@ -8,8 +8,8 @@ private:
 
 public:
 	std::string name = "cycle";
-	Cycle();
-	Cycle(int d);
-	void initialize();
-	void Tick();
+	//Cycle();
+	Cycle(int d = 5);
+	//void initialize();
+	void Tick(std::vector<unsigned char>&);
 };

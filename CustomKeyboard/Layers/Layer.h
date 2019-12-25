@@ -16,11 +16,12 @@ protected:
 	std::list<LogiLed::KeyName> affectedKeys;
 	Color color;
 	std::vector<unsigned char>* colorVector = nullptr;
-	bool associated = false;
+	//bool associated = false;
+	bool associated = true;
 
 public:
 	std::string name = "layer";
-	virtual void initialize() = 0;
+	//virtual void initialize() = 0;
 
 	void Associate(std::vector<unsigned char>* ptr) {
 		colorVector = ptr;
@@ -39,13 +40,15 @@ public:
 		return delta;
 	}
 
-	void RegisterKey(LogiLed::KeyName k) {	//do we need a lock on this?
+	virtual void RegisterKey(LogiLed::KeyName k) {	//do we need a lock on this?
 		affectedKeys.push_back(k);
 	}
 
-	void RemoveKey(LogiLed::KeyName k) {
+	virtual void RemoveKey(LogiLed::KeyName k) {
 		affectedKeys.remove(k);
 	}
 
-	virtual void Tick() = 0;
+	virtual void startKey(LogiLed::KeyName) {}
+
+	virtual void Tick(std::vector<unsigned char>&) = 0;
 };
