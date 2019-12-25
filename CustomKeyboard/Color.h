@@ -8,10 +8,10 @@ public:
 	unsigned char r, g, b, a;
 
 	Color() {
-		r = 0;
-		g = 0;
-		b = 0;
-		a = 0;
+		this->r = 0;
+		this->g = 0;
+		this->b = 0;
+		this->a = 0;
 	}
 
 	Color(int r, int g, int b) {
@@ -34,6 +34,22 @@ public:
 		this->g = 0;
 		this->b = 0;
 		this->a = 255;
+	}
+
+	Color(std::vector<int>& vc) {
+		if (vc.size() >= 3) {
+			this->r = vc[0];
+			this->g = vc[1];
+			this->b = vc[2];
+			this->a = vc.size() >= 4 ? vc[4] : 255;
+		}
+		else {
+			//Color();
+			this->r = 0;
+			this->g = 0;
+			this->b = 0;
+			this->a = 0;
+		}
 	}
 
 	//converts R 0-255 to percent 0-100

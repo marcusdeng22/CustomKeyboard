@@ -29,7 +29,7 @@ public:
 		return delta;
 	}
 
-	virtual void registerKey(LogiLed::KeyName k) {	//do we need a lock on this?
+	virtual void registerKey(LogiLed::KeyName k) {	//do we need a lock on this?	//should this be exposed? or completely virtual? only echo uses this
 		affectedKeys.push_back(k);
 	}
 

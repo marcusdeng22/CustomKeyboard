@@ -7,7 +7,7 @@
 class Fill : public Layer {
 private:
 	bool initialized;
-	IAudioEndpointVolume* micVolume;
+	IAudioEndpointVolume* micVolume;	//TODO: use a smart pointer
 
 	void paint(std::vector<unsigned char>&);
 public:

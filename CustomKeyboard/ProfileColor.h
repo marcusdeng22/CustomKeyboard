@@ -33,7 +33,6 @@ public:
 
 	template<typename T, typename... Args>
 	void addLayer(Args&&... args) {
-		OutputDebugString(L"adding layer\n");
 		//layers.push_back(std::make_shared<T>(std::forward<Args>(args)...));	//was unique
 		layers.push_back(std::make_shared<T>(args...));
 		if (std::is_same<T, Echo>::value) {
