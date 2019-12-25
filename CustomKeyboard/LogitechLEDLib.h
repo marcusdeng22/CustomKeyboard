@@ -411,7 +411,7 @@ namespace LogiLed
         KeyName::MOUSE_Z0,
         KeyName::MOUSE_Z1
         });
-    static const std::map<DWORD, KeyName> scanCodeToKeyName{
+    static const std::map<UINT, KeyName> scanCodeToKeyName{
         {VK_ESCAPE, KeyName::ESC},
         {VK_F1, KeyName::F1},
         {VK_F2, KeyName::F2},
@@ -585,13 +585,6 @@ namespace LogiLed
         {VK_OEM_CLEAR, KeyName::NONE}
     };
 
-    /*typedef enum class ExtraKey {
-
-    };
-    const std::map<KeyName, int> extraKeyIndex = {
-        {KeyName::G_1, 0}
-    };*/
-
     typedef enum class DeviceType {
         Keyboard                = 0x0,
         Mouse                   = 0x3,
@@ -600,26 +593,6 @@ namespace LogiLed
         Speaker                 = 0xe
     }DeviceType;
 }
-
-
-//struct ColorMap {
-//    std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_BITMAP_FULL_SIZE);
-//    /*Color G1;
-//    Color G2;
-//    Color G3;
-//    Color G4;
-//    Color G5;
-//    Color G6;
-//    Color G7;
-//    Color G8;
-//    Color G9;
-//    Color Badge;
-//    Color Logo;
-//    Color Mouse0;
-//    Color Mouse1;
-//
-//    ColorMap() : G1(0), G2(0), G3(0), G4(0), G5(0), G6(0), G7(0), G8(0), G9(0), Badge(0), Logo(0), Mouse0(0), Mouse1(0) {}*/
-//};
 
 bool LogiLedInit();
 bool LogiLedInitWithName(const char name[]);

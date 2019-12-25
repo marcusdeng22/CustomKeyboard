@@ -1,7 +1,6 @@
 #pragma once
+
 #include "Layer.h"
-#include <vector>
-#include <map>
 
 struct ColorAlpha {
 	Color curColor;
@@ -10,7 +9,7 @@ struct ColorAlpha {
 
 	ColorAlpha(Color c) {
 		curColor = c;
-		curAlpha = 1.0;
+		curAlpha = 1.0;	//scaled alpha value 0-1
 		started = false;
 	}
 
@@ -29,8 +28,11 @@ private:
 	double delta;
 
 public:
+	std::string name = "echo";
 	Echo();
+	Echo(double d);
 	void initialize();
+	void initialize(Color start, Color end = Color());
 	void RegisterKey(LogiLed::KeyName k);
 	void RemoveKey(LogiLed::KeyName k);
 	void startKey(LogiLed::KeyName k);

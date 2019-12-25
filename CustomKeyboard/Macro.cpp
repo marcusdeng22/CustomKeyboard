@@ -1,3 +1,4 @@
+#include <stdafx.h>
 #include "Macro.h"
 
 Macro::Macro(LPCSTR f, LPSTR a) {

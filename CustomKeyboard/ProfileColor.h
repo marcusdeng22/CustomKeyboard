@@ -1,58 +1,51 @@
 #pragma once
+
 #include "stdafx.h"
+#include <vector>
+#include <thread>
+#include <atomic>
+#include <memory>
 #include "Layers/Layer.h"
 #include "LogitechLEDLib.h"
 #include "Color.h"
-#include <vector>
-#include <thread>
 
 class ProfileColor {
 private:
 	std::vector<Layer*> layers;
-	//int tick = 20;	//update keyboard 50 times a second
+	//std::vector<std::shared_ptr<Layer>> layers;
 	int tick;
-	//unsigned char bitmap[LOGI_LED_BITMAP_SIZE] = { 0 };
-	//std::vector<unsigned char>* bitmap = new std::vector<unsigned char>(LOGI_LED_BITMAP_SIZE);
-	//ColorMap *colorMapping = new ColorMap();
 	std::vector<unsigned char>* colorVector = new std::vector<unsigned char>(LOGI_COLORMAP_FULL_SIZE);	//each 4 indices is BGRA value
+	std::atomic_bool readyToPaint{ false };
 
 public:
 	ProfileColor() {
-		//bitmap->resize(LOGI_LED_BITMAP_SIZE, 0);
-		tick = 20;
+		tick = 20;	//update keyboard 50 times a second
 	}
 
 	~ProfileColor() {
-		OutputDebugString(L"cleaning bitmap pointer\n");
-		//delete bitmap;
-		//delete colorMapping;
 		delete colorVector;
 	}
 
-	/*unsigned char* GetBitmap() {
-		wchar_t buf[256];
-		wsprintf(buf, L"%x", bitmap);
-		OutputDebugString(L"Profile color bitmap addr: ");
-		OutputDebugString(buf);
-		OutputDebugString(L"\n");
-		return bitmap;
-	}*/
-
-	/*std::vector<unsigned char>* GetBitmap() {
-		return bitmap;
-	}*/
-
-	/*ColorMap* GetColorMap() {
-		return colorMapping;
-	}*/
-
 	void AddLayer(Layer* l) {
-		//l->Associate(colorMapping);
+	//void AddLayer(std::shared_ptr<Layer> l) {
 		l->Associate(colorVector);
 		layers.push_back(l);
+		//layers.push_back(std::make_shared<Layer>(l));
 	}
 
 	//compute a bitmap array, and send to SDK
 	//also handles the g keys, logo, badge, and mouse colors
 	void SendColor();
+
+	void stop() {
+		readyToPaint = false;
+	}
+
+	ProfileColor& operator = (const ProfileColor& pc) {
+		layers = pc.layers;
+		tick = pc.tick;
+		colorVector = pc.colorVector;
+		readyToPaint = false;
+		return *this;
+	}
 };

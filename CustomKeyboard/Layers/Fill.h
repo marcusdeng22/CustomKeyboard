@@ -1,6 +1,6 @@
 #pragma once
+
 #include "Layer.h"
-#include <vector>
 #include <endpointvolume.h>
 #include <mmdeviceapi.h>
 
@@ -8,10 +8,10 @@ class Fill : public Layer {
 private:
 	bool initialized;
 	IAudioEndpointVolume* micVolume;
-	/*IMMDevice* micDevicePtr;*/
 
 	void paint();
 public:
+	std::string name = "fill";
 	Fill(Condition c = Condition::None);
 	~Fill();
 	void initialize();

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Fill.h"
 
+//TODO: update the device when changing the default device
 void Fill::updateDevice() {
 	initialized = false;
 	if (condition == Condition::MicMuted) {
@@ -34,26 +35,30 @@ Fill::Fill(Condition c) {
 }
 
 Fill::~Fill() {
-	delete micVolume;
-	//delete micDevicePtr;
-	CoUninitialize();
+	if (condition == Condition::MicMuted) {
+		//delete micVolume;
+		CoUninitialize();
+	}
 }
 
 void Fill::initialize() {
-	color = Color(255, 255, 255);
+	initialize(Color(255, 255, 255));	//default to white
 }
 
 void Fill::initialize(Color c) {
-	color = c;	//default to white
+	color = c;
+	for (auto const& k : LogiLed::bitmapIndex) {	//change this to join from all keys?
+		affectedKeys.push_back(k.first);
+	}
 }
 
 void Fill::initialize(LogiLed::KeyName k, Color c) {
-	initialize(c);
+	color = c;
 	RegisterKey(k);
 }
 
 void Fill::initialize(std::list<LogiLed::KeyName> l, Color c) {
-	initialize(c);
+	color = c;
 	affectedKeys = l;
 }
 

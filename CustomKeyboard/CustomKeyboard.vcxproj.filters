@@ -15,6 +15,8 @@
     <ClCompile Include="Layers\Fill.cpp">
       <Filter>Layers</Filter>
     </ClCompile>
+    <ClCompile Include="Macro.cpp" />
+    <ClCompile Include="Profile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomKeyboard.h" />
@@ -37,6 +39,8 @@
     <ClInclude Include="Layers\Fill.h">
       <Filter>Layers</Filter>
     </ClInclude>
+    <ClInclude Include="Macro.h" />
+    <ClInclude Include="Profile.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.md" />

@@ -1,17 +1,9 @@
 #pragma once
 
 #include <vector>
-//#include "LogitechLEDLib.h"
 #include <math.h>
 
-//typedef enum class Mode {
-//	RGB,
-//	PER
-//} Mode;
-
 class Color {	//rgb on a scale of 0-255
-//private:
-	//Mode mode = Mode::RGB;
 public:
 	unsigned char r, g, b, a;
 
@@ -107,29 +99,6 @@ public:
 		Color c(t_r, t_g, t_b);
 		return c;
 	}
-
-	/*Mode Mode() {
-		return mode;
-	}*/
-
-	//void Convert() {
-	//	if (mode == Mode::RGB) {
-	//		mode = Mode::PER;
-	//		//convert to percentage
-	//		r = (unsigned char)(r / 255.0 * 100 + 0.5);
-	//		g = (unsigned char)(g / 255.0 * 100 + 0.5);
-	//		b = (unsigned char)(b / 255.0 * 100 + 0.5);
-	//		a = (unsigned char)(a / 255.0 * 100 + 0.5);
-	//	}
-	//	else {
-	//		mode = Mode::RGB;
-	//		//convert to RGB
-	//		r = (unsigned char)(r / 100.0 * 255 + 0.5);
-	//		g = (unsigned char)(g / 100.0 * 255 + 0.5);
-	//		b = (unsigned char)(b / 100.0 * 255 + 0.5);
-	//		a = (unsigned char)(a / 100.0 * 255 + 0.5);
-	//	}
-	//}
 };
 
 

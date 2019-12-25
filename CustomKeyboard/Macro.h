@@ -10,9 +10,9 @@ enum class MacroType {
 };
 
 struct KeyState {
-	DWORD keyCode;
+	UINT keyCode;
 	bool isDown;
-	KeyState(DWORD k) {
+	KeyState(UINT k) {
 		keyCode = k;
 		isDown = true;	//set to false to send key up
 	}
