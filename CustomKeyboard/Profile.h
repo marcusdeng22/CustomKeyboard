@@ -27,6 +27,15 @@ public:
 		macroMapping[k]->push_back(std::make_shared<Macro>(args...));
 	}
 
+	void execMacro(DWORD k) {
+		auto macroData = macroMapping.find(k);
+		if (macroData != macroMapping.end()) {
+			for (auto m : *(macroData->second)) {
+				m->exec();
+			}
+		}
+	}
+
 	/*void addMacro(DWORD k, std::list<Macro> m) {
 		macroMapping.insert({k, m});
 	}

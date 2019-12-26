@@ -538,7 +538,6 @@ namespace LogiLed
         {VK_HELP, KeyName::NONE},
         {VK_APPS, KeyName::NONE},
         {VK_SLEEP, KeyName::NONE},
-        {VK_APPS, KeyName::NONE},
         {VK_SEPARATOR, KeyName::NONE},
         {VK_F13, KeyName::NONE},
         {VK_F14, KeyName::NONE},
