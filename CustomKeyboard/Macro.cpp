@@ -18,7 +18,12 @@ Macro::Macro(std::vector<KeyState> ks, std::vector<int> d, int defDelay) {
 }
 
 Macro::Macro(MacroType m) {
-	mode = MacroType::power;
+	if (m == MacroType::power || m == MacroType::audioCycle || m == MacroType::micToggle) {
+		mode = m;
+	}
+	else {
+		mode = MacroType::NONE;
+	}
 	fileName = NULL;
 	args = NULL;
 	defaultDelay = NULL;
@@ -61,11 +66,13 @@ void Macro::exec() {
 					ip.ki.dwFlags = KEYEVENTF_KEYUP;
 				}
 				SendInput(1, &ip, sizeof(INPUT));
-				if (i < delays.size()) {
-					Sleep(delays[i]);
-				}
-				else {
-					Sleep(defaultDelay);
+				if (i != keySeq.size() - 1) {	//delay only if not last key
+					if (i < delays.size()) {
+						Sleep(delays[i]);
+					}
+					else {
+						Sleep(defaultDelay);
+					}
 				}
 			}
 		break;

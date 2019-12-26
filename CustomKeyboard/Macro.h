@@ -6,15 +6,18 @@ enum class MacroType {
 	launchApp,
 	keySeq,
 	power,
-	delay
+	audioCycle,
+	micToggle,
+	delay,
+	NONE
 };
 
 struct KeyState {
 	UINT keyCode;
 	bool isDown;
-	KeyState(UINT k) {
+	KeyState(UINT k, bool down) {
 		keyCode = k;
-		isDown = true;	//set to false to send key up
+		isDown = down;	//set to false to send key up
 	}
 };
 
@@ -28,7 +31,7 @@ private:
 	int defaultDelay;
 public:
 	Macro(LPCSTR f, LPSTR a = NULL);
-	Macro(std::vector<KeyState> ks, std::vector<int> d, int defDelay = 50);
+	Macro(std::vector<KeyState> ks, std::vector<int> d = {}, int defDelay = 50);
 	Macro(MacroType m);
 	Macro(int delay);
 	void exec();
