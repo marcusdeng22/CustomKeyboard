@@ -1,52 +1,83 @@
 #include <stdafx.h>
 #include "Macro.h"
 
-Macro::Macro(LPCSTR f, LPSTR a) {
+//Macro::Macro(LPCSTR f, size_t f_len, LPSTR a, size_t a_len) {
+Macro::Macro(std::string f, std::string a) {
+	micVolume = nullptr;
 	mode = MacroType::launchApp;
 	fileName = f;
+	//strcpy_s(fileName, f_len, f);
 	args = a;
 	defaultDelay = NULL;
+	OutputDebugString(L"creating launch macro\n");
+	OutputDebugStringA(fileName.c_str());
+	OutputDebugString(L"\n");
+	OutputDebugStringA(args.c_str());
+	OutputDebugStringW(L"\n");
 }
 
 Macro::Macro(std::vector<KeyState> ks, std::vector<int> d, int defDelay) {
+	micVolume = nullptr;
 	mode = MacroType::keySeq;
 	keySeq = ks;
 	delays = d;
 	defaultDelay = defDelay;
-	fileName = NULL;
-	args = NULL;
+	//fileName = NULL;
+	//args = NULL;
 }
 
 Macro::Macro(MacroType m) {
-	if (m == MacroType::power || m == MacroType::audioCycle || m == MacroType::micToggle) {
+	micVolume = nullptr;
+	if (m == MacroType::audioCycle || m == MacroType::micToggle) {
+		HRESULT hr = CoInitialize(NULL);
+		if (SUCCEEDED(hr)) {
+			mode = m;
+		}
+		else {
+			mode = MacroType::NONE;
+		}
+	}
+	else if (m == MacroType::power) {
 		mode = m;
 	}
 	else {
 		mode = MacroType::NONE;
 	}
-	fileName = NULL;
-	args = NULL;
+	//fileName = NULL;
+	//args = NULL;
 	defaultDelay = NULL;
 }
 
 Macro::Macro(int delay) {
+	micVolume = nullptr;
 	mode = MacroType::delay;
-	fileName = NULL;
-	args = NULL;
+	//fileName = NULL;
+	//args = NULL;
 	defaultDelay = delay;
+}
+
+Macro::~Macro() {
+	if (mode == MacroType::audioCycle || mode == MacroType::micToggle) {
+		CoUninitialize();
+	}
 }
 
 void Macro::exec() {
 	switch (mode)
 	{
 	case MacroType::launchApp:
+		OutputDebugString(L"launching macro\n");
+		OutputDebugStringA(fileName.c_str());
+		OutputDebugString(L"\n");
+		OutputDebugStringA(args.c_str());
+		OutputDebugStringW(L"\n");
 		//https://stackoverflow.com/questions/15435994/how-do-i-open-an-exe-from-another-c-exe
 		STARTUPINFOA si;
 		PROCESS_INFORMATION pi;
 		ZeroMemory(&si, sizeof(si));
 		si.cb = sizeof(si);
 		ZeroMemory(&pi, sizeof(pi));
-		CreateProcessA(fileName, args , NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+		CreateProcessA(fileName.c_str(), &(args[0]) , NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 		break;
@@ -79,10 +110,115 @@ void Macro::exec() {
 	case MacroType::power:
 		//send the sleep command here: https://docs.microsoft.com/en-us/windows/win32/api/powrprof/nf-powrprof-setsuspendstate
 		break;
+	case MacroType::audioCycle:
+		Macro::swapOutput();
+		break;
+	case MacroType::micToggle:
+		Macro::toggleMute();
+		break;
 	case MacroType::delay:
 		Sleep(defaultDelay);
 		break;
 	default:
 		break;
 	}
+}
+
+
+HRESULT Macro::setDefaultAudioPlaybackDevice(LPCWSTR devID) {
+	IPolicyConfigVista* pPolicyConfig;
+
+	HRESULT hr = CoCreateInstance(__uuidof(CPolicyConfigVistaClient), NULL, CLSCTX_ALL, __uuidof(IPolicyConfigVista), (LPVOID*)&pPolicyConfig);
+	if (SUCCEEDED(hr))
+	{
+		hr = pPolicyConfig->SetDefaultEndpoint(devID, ERole::eConsole);
+		pPolicyConfig->Release();
+	}
+	return hr;
+}
+
+void Macro::toggleMute() {
+	//HRESULT hr = CoInitialize(NULL);
+	//if (SUCCEEDED(hr)) {
+	IMMDeviceEnumerator* de;
+	HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
+	if (SUCCEEDED(hr)) {
+		IMMDevice* micDevicePtr;
+		hr = de->GetDefaultAudioEndpoint(EDataFlow::eCapture, ERole::eCommunications, &micDevicePtr);
+		if (SUCCEEDED(hr)) {
+			hr = micDevicePtr->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, (void**)&micVolume);
+			if (SUCCEEDED(hr)) {
+				BOOL wasMuted;
+				micVolume->GetMute(&wasMuted);
+
+				//toggle the mute
+				micVolume->SetMute(!wasMuted, nullptr);
+			}
+			micDevicePtr->Release();
+		}
+		de->Release();
+	}
+	//}
+	//CoUninitialize();
+}
+
+void Macro::swapOutput() {
+	//HRESULT hr = CoInitialize(NULL);
+	//if (SUCCEEDED(hr)) {
+	IMMDeviceEnumerator* de;
+	HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
+	if (SUCCEEDED(hr)) {
+		IMMDeviceCollection* outputDeviceList;
+		de->EnumAudioEndpoints(EDataFlow::eRender, DEVICE_STATE_ACTIVE, &outputDeviceList);
+		if (SUCCEEDED(hr)) {
+			//get the default
+			IMMDevice* defaultOutput;
+			LPWSTR pstrDefault = NULL;	//to store the ID of the default
+			hr = de->GetDefaultAudioEndpoint(EDataFlow::eRender, ERole::eMultimedia, &defaultOutput);
+			if (SUCCEEDED(hr)) {
+				hr = defaultOutput->GetId(&pstrDefault);
+				if (SUCCEEDED(hr)) {
+					UINT count;
+					hr = outputDeviceList->GetCount(&count);
+					if (SUCCEEDED(hr)) {
+						//loop through all output devices, and once we find the default, set the next index (wraparound) to be the new default
+						IMMDevice* nextOutput;
+						LPWSTR pstrNextId = NULL;
+						if (count != 1) {	//more than one device to switch between
+							for (ULONG i = 0; i < count; i++) {
+								hr = outputDeviceList->Item(i, &nextOutput);
+								if (SUCCEEDED(hr)) {
+									hr = nextOutput->GetId(&pstrNextId);
+									if (SUCCEEDED(hr)) {
+										if (!lstrcmpi(pstrNextId, pstrDefault)) {	//same IDs
+											//set the next as the new default and break
+											i++;
+											if (i == count) {	//wraparound
+												i = 0;
+											}
+											hr = outputDeviceList->Item(i, &nextOutput);
+											if (SUCCEEDED(hr)) {
+												hr = nextOutput->GetId(&pstrNextId);
+												if (SUCCEEDED(hr)) {
+													hr = setDefaultAudioPlaybackDevice(pstrNextId);
+													i = count + 1;	//simple way to break and run cleanup
+												}
+												nextOutput->Release();
+											}
+										}
+									}
+									nextOutput->Release();
+								}
+							}
+						}
+					}
+				}
+				defaultOutput->Release();
+			}
+			outputDeviceList->Release();
+		}
+		de->Release();
+	}
+	//}
+	//CoUninitialize();
 }

@@ -1,6 +1,13 @@
 #pragma once
 #include <vector>
 #include <windows.h>
+#include <mmdeviceapi.h>
+#include <mmsystem.h>
+#include <endpointvolume.h>
+#include <PropIdl.h>
+#include <Functiondiscoverykeys_devpkey.h>
+#include <PolicyConfig.h>
+#include <string>
 
 enum class MacroType {
 	launchApp,
@@ -22,17 +29,25 @@ struct KeyState {
 };
 
 class Macro {
-private:
+protected:
 	MacroType mode;
-	LPCSTR fileName;
-	LPSTR args;
+	/*LPCSTR fileName;
+	LPSTR args;*/
+	std::string fileName;
+	std::string args;
 	std::vector<KeyState> keySeq;
 	std::vector<int> delays;
 	int defaultDelay;
+	IAudioEndpointVolume* micVolume;	//TODO: use a smart pointer
+	HRESULT setDefaultAudioPlaybackDevice(LPCWSTR devID);
+	void toggleMute();
+	void swapOutput();
 public:
-	Macro(LPCSTR f, LPSTR a = NULL);
+	//Macro(LPCSTR f, size_t f_len, LPSTR a = NULL, size_t a_len = 0);
+	Macro(std::string f, std::string a);
 	Macro(std::vector<KeyState> ks, std::vector<int> d = {}, int defDelay = 50);
 	Macro(MacroType m);
 	Macro(int delay);
+	~Macro();
 	void exec();
 };
