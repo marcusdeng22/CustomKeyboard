@@ -41,6 +41,7 @@
     </ClInclude>
     <ClInclude Include="Macro.h" />
     <ClInclude Include="Profile.h" />
+    <ClInclude Include="ThreadManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.md" />

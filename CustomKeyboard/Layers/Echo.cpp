@@ -25,7 +25,10 @@ void Echo::removeKey(LogiLed::KeyName k) {
 
 //start the animation; this prevents weird things when holding down keys
 void Echo::startKey(LogiLed::KeyName k) {
-	keyMapping.at(k).started = true;
+	auto i = keyMapping.find(k);
+	if (i != keyMapping.end()) {
+		i->second.started = true;
+	}
 }
 
 void Echo::tick(std::vector<unsigned char>& colorVector) {

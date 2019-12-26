@@ -31,8 +31,6 @@ struct KeyState {
 class Macro {
 protected:
 	MacroType mode;
-	/*LPCSTR fileName;
-	LPSTR args;*/
 	std::string fileName;
 	std::string args;
 	std::vector<KeyState> keySeq;
@@ -43,7 +41,6 @@ protected:
 	void toggleMute();
 	void swapOutput();
 public:
-	//Macro(LPCSTR f, size_t f_len, LPSTR a = NULL, size_t a_len = 0);
 	Macro(std::string f, std::string a);
 	Macro(std::vector<KeyState> ks, std::vector<int> d = {}, int defDelay = 50);
 	Macro(MacroType m);

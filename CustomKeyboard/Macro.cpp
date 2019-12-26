@@ -1,19 +1,12 @@
 #include <stdafx.h>
 #include "Macro.h"
 
-//Macro::Macro(LPCSTR f, size_t f_len, LPSTR a, size_t a_len) {
 Macro::Macro(std::string f, std::string a) {
 	micVolume = nullptr;
 	mode = MacroType::launchApp;
 	fileName = f;
-	//strcpy_s(fileName, f_len, f);
 	args = a;
 	defaultDelay = NULL;
-	OutputDebugString(L"creating launch macro\n");
-	OutputDebugStringA(fileName.c_str());
-	OutputDebugString(L"\n");
-	OutputDebugStringA(args.c_str());
-	OutputDebugStringW(L"\n");
 }
 
 Macro::Macro(std::vector<KeyState> ks, std::vector<int> d, int defDelay) {
@@ -22,20 +15,18 @@ Macro::Macro(std::vector<KeyState> ks, std::vector<int> d, int defDelay) {
 	keySeq = ks;
 	delays = d;
 	defaultDelay = defDelay;
-	//fileName = NULL;
-	//args = NULL;
 }
 
 Macro::Macro(MacroType m) {
 	micVolume = nullptr;
 	if (m == MacroType::audioCycle || m == MacroType::micToggle) {
-		HRESULT hr = CoInitialize(NULL);
-		if (SUCCEEDED(hr)) {
+		/*HRESULT hr = CoInitialize(NULL);
+		if (SUCCEEDED(hr)) {*/
 			mode = m;
-		}
+		/*}
 		else {
 			mode = MacroType::NONE;
-		}
+		}*/
 	}
 	else if (m == MacroType::power) {
 		mode = m;
@@ -43,28 +34,23 @@ Macro::Macro(MacroType m) {
 	else {
 		mode = MacroType::NONE;
 	}
-	//fileName = NULL;
-	//args = NULL;
 	defaultDelay = NULL;
 }
 
 Macro::Macro(int delay) {
 	micVolume = nullptr;
 	mode = MacroType::delay;
-	//fileName = NULL;
-	//args = NULL;
 	defaultDelay = delay;
 }
 
 Macro::~Macro() {
-	if (mode == MacroType::audioCycle || mode == MacroType::micToggle) {
+	/*if (mode == MacroType::audioCycle || mode == MacroType::micToggle) {
 		CoUninitialize();
-	}
+	}*/
 }
 
 void Macro::exec() {
-	switch (mode)
-	{
+	switch (mode) {
 	case MacroType::launchApp:
 		OutputDebugString(L"launching macro\n");
 		OutputDebugStringA(fileName.c_str());
@@ -109,6 +95,7 @@ void Macro::exec() {
 		break;
 	case MacroType::power:
 		//send the sleep command here: https://docs.microsoft.com/en-us/windows/win32/api/powrprof/nf-powrprof-setsuspendstate
+
 		break;
 	case MacroType::audioCycle:
 		Macro::swapOutput();
@@ -138,8 +125,8 @@ HRESULT Macro::setDefaultAudioPlaybackDevice(LPCWSTR devID) {
 }
 
 void Macro::toggleMute() {
-	//HRESULT hr = CoInitialize(NULL);
-	//if (SUCCEEDED(hr)) {
+	HRESULT hr = CoInitialize(NULL);
+	if (SUCCEEDED(hr)) {
 	IMMDeviceEnumerator* de;
 	HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
 	if (SUCCEEDED(hr)) {
@@ -158,13 +145,13 @@ void Macro::toggleMute() {
 		}
 		de->Release();
 	}
-	//}
-	//CoUninitialize();
+	}
+	CoUninitialize();
 }
 
 void Macro::swapOutput() {
-	//HRESULT hr = CoInitialize(NULL);
-	//if (SUCCEEDED(hr)) {
+	HRESULT hr = CoInitialize(NULL);
+	if (SUCCEEDED(hr)) {
 	IMMDeviceEnumerator* de;
 	HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
 	if (SUCCEEDED(hr)) {
@@ -219,6 +206,6 @@ void Macro::swapOutput() {
 		}
 		de->Release();
 	}
-	//}
-	//CoUninitialize();
+	}
+	CoUninitialize();
 }
