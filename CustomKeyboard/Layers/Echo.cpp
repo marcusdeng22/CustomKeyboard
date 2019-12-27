@@ -10,6 +10,7 @@ Echo::Echo(double d, Color start, Color end) {
 
 //override the register key; we don't want to use a list
 void Echo::registerKey(LogiLed::KeyName k) {
+	keyLock.lock();
 	//check if key is in map; if so reset the alpha
 	if (keyMapping.find(k) == keyMapping.end()) {
 		keyMapping.insert({ k, ColorAlpha(startColor) });
@@ -17,21 +18,36 @@ void Echo::registerKey(LogiLed::KeyName k) {
 	else {
 		keyMapping.at(k).reset(startColor);
 	}
+	keyLock.unlock();
 }
 
 void Echo::removeKey(LogiLed::KeyName k) {
-	keyMapping.erase(k);
+	keyLock.lock();
+	if (keyMapping.find(k) != keyMapping.end()) {
+		keyMapping.erase(k);
+	}
+	keyLock.unlock();
+}
+
+void Echo::clearKeys() {
+	keyLock.lock();
+	OutputDebugString(L"echo clear keys hit\n");
+	keyMapping.clear();
+	keyLock.unlock();
 }
 
 //start the animation; this prevents weird things when holding down keys
 void Echo::startKey(LogiLed::KeyName k) {
+	keyLock.lock();
 	auto i = keyMapping.find(k);
 	if (i != keyMapping.end()) {
 		i->second.started = true;
 	}
+	keyLock.unlock();
 }
 
 void Echo::tick(std::vector<unsigned char>& colorVector) {
+	keyLock.lock();
 	std::vector<LogiLed::KeyName> toRemove;
 	for (auto& mapping : keyMapping) {
 		//lookup the index in the bitmap
@@ -65,6 +81,7 @@ void Echo::tick(std::vector<unsigned char>& colorVector) {
 		}
 	}
 	for (LogiLed::KeyName k : toRemove) {
-		removeKey(k);
+		keyMapping.erase(k);
 	}
+	keyLock.unlock();
 }

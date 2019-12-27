@@ -46,6 +46,12 @@ public:
 
 	void stop() {
 		readyToPaint = false;
+		//remove all echo keys
+		for (size_t i : echoLayers) {
+			layers[i]->clearKeys();
+		}
+		//zero out the bitmap
+		std::fill(colorVector.begin(), colorVector.end(), 0);
 	}
 
 	void notifyEcho(LogiLed::KeyName k) {

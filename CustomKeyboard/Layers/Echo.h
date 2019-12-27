@@ -31,6 +31,7 @@ public:
 	Echo(double d = 0.01, Color start = Color(255, 255, 255), Color end = Color());
 	void registerKey(LogiLed::KeyName k);
 	void removeKey(LogiLed::KeyName k);
-	virtual void startKey(LogiLed::KeyName k) override;
+	void clearKeys();
+	void startKey(LogiLed::KeyName k);
 	void tick(std::vector<unsigned char>&);
 };

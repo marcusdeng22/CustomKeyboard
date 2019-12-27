@@ -95,7 +95,7 @@ void Macro::exec() {
 		break;
 	case MacroType::power:
 		//send the sleep command here: https://docs.microsoft.com/en-us/windows/win32/api/powrprof/nf-powrprof-setsuspendstate
-
+		SetSuspendState(FALSE, NULL, FALSE);
 		break;
 	case MacroType::audioCycle:
 		Macro::swapOutput();

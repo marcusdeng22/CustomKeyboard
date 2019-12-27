@@ -8,6 +8,7 @@
 #include <Functiondiscoverykeys_devpkey.h>
 #include <PolicyConfig.h>
 #include <string>
+#include <powrprof.h>
 
 enum class MacroType {
 	launchApp,

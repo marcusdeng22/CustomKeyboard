@@ -71,6 +71,7 @@ Fill::~Fill() {
 }
 
 void Fill::paint(std::vector<unsigned char>& colorVector) {
+	keyLock.lock();
 	for (LogiLed::KeyName k : affectedKeys) {
 		//lookup the index in the bitmap
 		size_t index = LogiLed::bitmapIndex.at(k);
@@ -79,6 +80,7 @@ void Fill::paint(std::vector<unsigned char>& colorVector) {
 		(colorVector)[index + 2] = color.r;
 		(colorVector)[index + 3] = color.a;
 	}
+	keyLock.unlock();
 }
 
 void Fill::tick(std::vector<unsigned char>& colorVector) {

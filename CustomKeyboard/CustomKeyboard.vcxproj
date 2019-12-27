@@ -113,7 +113,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>LogitechLEDLib.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;winmm.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;Pathcch.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LogitechLEDLib.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;winmm.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;Pathcch.lib;PowrProf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib</AdditionalLibraryDirectories>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
@@ -172,7 +172,6 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="ThreadManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Color.cpp" />

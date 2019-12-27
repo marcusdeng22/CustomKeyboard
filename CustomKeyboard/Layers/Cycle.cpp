@@ -6,13 +6,16 @@ Cycle::Cycle(int d) {
 	cycleCounter = 0;
 	delta = d;
 	color = Color(255, 0, 0);
+	keyLock.lock();
 	for (auto const& k : LogiLed::bitmapIndex) {	//change this to join from all keys?
 		affectedKeys.push_back(k.first);
 	}
+	keyLock.unlock();
 }
 
 void Cycle::tick(std::vector<unsigned char>& colorVector) {
 	//set the bitmap
+	keyLock.lock();
 	for (LogiLed::KeyName k : affectedKeys) {
 		//lookup the index in the bitmap
 		size_t index = LogiLed::bitmapIndex.at(k);
@@ -21,6 +24,7 @@ void Cycle::tick(std::vector<unsigned char>& colorVector) {
 		(colorVector)[index + 2] = color.r;
 		(colorVector)[index + 3] = color.a;
 	}
+	keyLock.unlock();
 
 	//increment colors
 	if (cycleCounter == 0) {

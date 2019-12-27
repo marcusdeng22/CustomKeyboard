@@ -1,0 +1,170 @@
+{
+  "default": {
+    "layers": [
+      {
+        "Cycle": {
+          "delta": 5
+        }
+      },
+      {
+        "Echo": {
+          "delta": 0.01,
+          "start": [ 255, 255, 255 ]
+        }
+      },
+      {
+        "Fill": {
+          "condition": "MicMuted",
+          "color": [ 255, 255, 255 ],
+          "keys": [ "G_7" ]
+        }
+      }
+    ],
+    "macros": {
+      "G_1": [
+        {
+          "type": "keySeq",
+          "seq": [ "ESC" ],
+          "innerDelay": [ 20 ]
+        }
+      ],
+      "G_2": [
+        {
+          "type": "keySeq",
+          "seq": [ "DOWN:LEFT_CONTROL", "DOWN:LEFT_WINDOWS", "DOWN:ARROW_RIGHT", "UP:ARROW_RIGHT", "UP:LEFT_WINDOWS", "UP:LEFT_CONTROL" ],
+          "delay": 50
+        }
+      ],
+      "G_3": [
+        {
+          "type": "keySeq",
+          "seq": [ "DOWN:LEFT_CONTROL", "DOWN:LEFT_WINDOWS", "DOWN:ARROW_LEFT" ], 
+          "delay": 50
+        },
+        {
+          "type": "keySeq",
+          "seq": [ "UP:ARROW_LEFT", "UP:LEFT_WINDOWS", "UP:LEFT_CONTROL" ]
+        }
+      ],
+      "G_4": [
+        {
+          "type": "keySeq",
+          "seq": [ "ARROW_UP", "ENTER" ]
+        }
+      ],
+      "G_5": [
+        {
+          "type": "keySeq",
+          "seq": [ "LEFT_CONTROL" ],
+          "delay": 20
+        }
+      ],
+      "G_6": [
+        {
+          "type": "audioCycle"
+        }
+      ],
+      "G_7": [
+        {
+          "type": "micToggle"
+        }
+      ],
+      "G_8": [
+        {
+          "type": "launchApp",
+          "path": "C:\\Windows\\System32\\calc.exe"
+        }
+      ],
+      "G_9": [
+        {
+          "type": "power"
+        }
+      ]
+    }
+  },
+  "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Warframe\\Warframe.x64.exe": {
+    "layers": [
+      {
+        "Fill": {
+          "condition": "None",
+          "color": [ 67, 236, 6 ],
+          "keys": []
+        }
+      },
+      {
+        "Fill": {
+          "condition": "None",
+          "color": [ 232, 6, 28 ],
+          "keys": [
+            "TILDE",
+            "TAB",
+            "Q",
+            "Y",
+            "V",
+            "B",
+            "G_2",
+            "G_3",
+            "G_4",
+            "G_5"
+          ]
+        }
+      },
+      {
+        "Fill": {
+          "condition": "None",
+          "color": [ 77, 6, 232 ],
+          "keys": [
+            "ONE",
+            "TWO",
+            "THREE",
+            "FOUR",
+            "FIVE",
+            "E",
+            "R",
+            "F",
+            "G"
+          ]
+        }
+      },
+      {
+        "Fill": {
+          "condition": "None",
+          "color": [ 23, 255, 255 ],
+          "keys": [
+            "W",
+            "A",
+            "S",
+            "D",
+            "LEFT_SHIFT",
+            "C",
+            "LEFT_CONTROL",
+            "SPACE"
+          ]
+        }
+      },
+      {
+        "Fill": {
+          "condition": "None",
+          "color": [ 255, 255, 255 ],
+          "keys": [ "G_9" ]
+        }
+      },
+      {
+        "Echo": {
+          "start": [ 255, 255, 255 ]
+        }
+      }
+    ],
+    "macros": {
+      "G_1": [],
+      "G_2": [],
+      "G_3": [],
+      "G_4": [],
+      "G_5": [],
+      "G_6": [],
+      "G_7": [],
+      "G_8": [],
+      "G_9": []
+    }
+  }
+}

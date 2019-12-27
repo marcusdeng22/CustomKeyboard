@@ -2,6 +2,8 @@
 
 #include "LogitechLEDLib.h"
 #include "Color.h"
+#include <mutex>
+#include <algorithm>
 
 enum class Condition {
 	None,
@@ -15,6 +17,7 @@ protected:
 	std::list<LogiLed::KeyName> affectedKeys;
 	Color color;
 	std::vector<unsigned char>* colorVector = nullptr;
+	std::mutex keyLock;
 
 public:
 	Condition getCondition() {
@@ -29,12 +32,24 @@ public:
 		return delta;
 	}
 
-	virtual void registerKey(LogiLed::KeyName k) {	//do we need a lock on this?	//should this be exposed? or completely virtual? only echo uses this
+	virtual void registerKey(LogiLed::KeyName k) {
+		keyLock.lock();
 		affectedKeys.push_back(k);
+		keyLock.unlock();
 	}
 
 	virtual void removeKey(LogiLed::KeyName k) {
-		affectedKeys.remove(k);
+		keyLock.lock();
+		if (std::find(affectedKeys.begin(), affectedKeys.end(), k) != affectedKeys.end()) {
+			affectedKeys.remove(k);
+		}
+		keyLock.unlock();
+	}
+
+	virtual void clearKeys() {
+		keyLock.lock();
+		affectedKeys.clear();
+		keyLock.unlock();
 	}
 
 	virtual void startKey(LogiLed::KeyName) {}
