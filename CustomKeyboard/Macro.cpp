@@ -100,30 +100,6 @@ void Macro::exec() {
 						ip.ki.dwFlags |= KEYEVENTF_KEYUP;
 					}
 				}
-				////ip.ki.wVk = keySeq[i].keyCode;
-				//ip.ki.wScan = keySeq[i].keyCode;
-				//if (keySeq[i].isDown) {
-				//	ip.ki.dwFlags |= KEYEVENTF_KEYUP;
-				//}
-				///*if (keySeq[i].isDown) {
-				//	ip.ki.dwFlags = 0;
-				//}
-				//else {
-				//	ip.ki.dwFlags = KEYEVENTF_KEYUP;
-				//}*/
-				//////use scan codes for enter; some applications fail to register the virtual key
-				////if (keySeq[i].keyCode == VK_NUMPAD_ENTER) {
-				////	OutputDebugString(L"numpad enter sending\n");
-				////	ip.ki.wScan = 0x1c;
-				////	ip.ki.wVk = 0;
-				////	ip.ki.dwFlags |= KEYEVENTF_EXTENDEDKEY | KEYEVENTF_SCANCODE;
-				////}
-				////else if (ip.ki.wVk == VK_RETURN) {
-				////	OutputDebugString(L"keyboard enter sending\n");
-				////	ip.ki.wScan = 0x1c;
-				////	ip.ki.wVk = 0;
-				////	ip.ki.dwFlags |= KEYEVENTF_SCANCODE;
-				////}
 				SendInput(1, &ip, sizeof(INPUT));
 				if (i != keySeq.size() - 1) {	//delay only if not last key
 					if (i < delays.size()) {
