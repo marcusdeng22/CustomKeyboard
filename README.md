@@ -16,7 +16,10 @@ Possible macros are:
 - cycle audio: set the default audio output to the next in queue
 - sleep: put the computer in standby
 
-Macros are boundable to any key; to specify the key refer to `toVKCode` in `CustomKeyboard.h`.
+Macros are boundable to any key; to specify the key refer to `toVKCode` and `toScanCode` in `CustomKeyboard.h`.
+As the names of the maps imply, both Virtual Keys and Scan Codes are supported.
+To specify which, use the `keyType` parameter in the settings json, and use `virtual` or `scan`.
+Some applications may only be able to interpret scan codes, but virtual keys offer more functionality.
 
 This includes an adapation of [MicMuteToggle](https://github.com/fredemmott/MicMuteToggle/tree/master/MicMuteToggle)
 and uses some code from [here](https://stackoverflow.com/questions/57778069/how-can-i-programmatically-set-the-default-input-and-output-audio-device-for-an)

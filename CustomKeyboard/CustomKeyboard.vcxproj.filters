@@ -43,9 +43,6 @@
     <ClInclude Include="Profile.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Layers">
       <UniqueIdentifier>{45a26272-ba5f-4d09-8de7-0f4e49c51423}</UniqueIdentifier>
     </Filter>

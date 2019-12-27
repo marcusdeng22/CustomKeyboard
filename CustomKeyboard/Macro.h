@@ -9,6 +9,7 @@
 #include <PolicyConfig.h>
 #include <string>
 #include <powrprof.h>
+#include "LogitechLEDLib.h"
 
 enum class MacroType {
 	launchApp,
@@ -20,11 +21,18 @@ enum class MacroType {
 	NONE
 };
 
+enum class KeyType {
+	VK,	//virtual key
+	SC	//scan code
+};
+
 struct KeyState {
-	UINT keyCode;
+	UINT keyCode;	//this is a SCAN CODE or a VIRTUAL KEY
+	KeyType keyType;
 	bool isDown;
-	KeyState(UINT k, bool down) {
+	KeyState(UINT k, bool t, bool down) {
 		keyCode = k;
+		keyType = t ? KeyType::VK : KeyType::SC;
 		isDown = down;	//set to false to send key up
 	}
 };

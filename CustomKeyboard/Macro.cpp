@@ -71,17 +71,59 @@ void Macro::exec() {
 		INPUT ip;
 			ip.type = INPUT_KEYBOARD;
 			ip.ki.wScan = 0;
+			ip.ki.wVk = 0;
+			ip.ki.dwFlags = 0;
 			ip.ki.time = 0;
 			ip.ki.dwExtraInfo = 0;
 
 			for (int i = 0; i < keySeq.size(); i++) {
-				ip.ki.wVk = keySeq[i].keyCode;
-				if (keySeq[i].isDown) {
-					ip.ki.dwFlags = 0;
+				if (keySeq[i].keyType == KeyType::VK) {
+					ip.ki.wVk = keySeq[i].keyCode;
+					if (ip.ki.wVk == VK_NUMPAD_ENTER) {
+						ip.ki.wVk = VK_RETURN;
+						ip.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
+					}
+					if (keySeq[i].isDown) {
+						ip.ki.dwFlags = 0;
+					}
+					else {
+						ip.ki.dwFlags = KEYEVENTF_KEYUP;
+					}
 				}
-				else {
-					ip.ki.dwFlags = KEYEVENTF_KEYUP;
+				else if (keySeq[i].keyType == KeyType::SC) {
+					ip.ki.wScan = keySeq[i].keyCode;
+					ip.ki.dwFlags = KEYEVENTF_SCANCODE;
+					if (keySeq[i].isDown) {
+						ip.ki.dwFlags |= 0;
+					}
+					else {
+						ip.ki.dwFlags |= KEYEVENTF_KEYUP;
+					}
 				}
+				////ip.ki.wVk = keySeq[i].keyCode;
+				//ip.ki.wScan = keySeq[i].keyCode;
+				//if (keySeq[i].isDown) {
+				//	ip.ki.dwFlags |= KEYEVENTF_KEYUP;
+				//}
+				///*if (keySeq[i].isDown) {
+				//	ip.ki.dwFlags = 0;
+				//}
+				//else {
+				//	ip.ki.dwFlags = KEYEVENTF_KEYUP;
+				//}*/
+				//////use scan codes for enter; some applications fail to register the virtual key
+				////if (keySeq[i].keyCode == VK_NUMPAD_ENTER) {
+				////	OutputDebugString(L"numpad enter sending\n");
+				////	ip.ki.wScan = 0x1c;
+				////	ip.ki.wVk = 0;
+				////	ip.ki.dwFlags |= KEYEVENTF_EXTENDEDKEY | KEYEVENTF_SCANCODE;
+				////}
+				////else if (ip.ki.wVk == VK_RETURN) {
+				////	OutputDebugString(L"keyboard enter sending\n");
+				////	ip.ki.wScan = 0x1c;
+				////	ip.ki.wVk = 0;
+				////	ip.ki.dwFlags |= KEYEVENTF_SCANCODE;
+				////}
 				SendInput(1, &ip, sizeof(INPUT));
 				if (i != keySeq.size() - 1) {	//delay only if not last key
 					if (i < delays.size()) {

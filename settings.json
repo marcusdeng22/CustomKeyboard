@@ -24,6 +24,7 @@
       "G_1": [
         {
           "type": "keySeq",
+          "keyType": "scan",
           "seq": [ "ESC" ],
           "innerDelay": [ 20 ]
         }
