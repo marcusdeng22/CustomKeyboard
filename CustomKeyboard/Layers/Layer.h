@@ -7,7 +7,8 @@
 
 enum class Condition {
 	None,
-	MicMuted
+	MicMuted,
+	AudioOutput
 };
 
 class Layer {

@@ -137,7 +137,8 @@ HRESULT Macro::setDefaultAudioPlaybackDevice(LPCWSTR devID) {
 	if (SUCCEEDED(hr))
 	{
 		hr = pPolicyConfig->SetDefaultEndpoint(devID, ERole::eConsole);
-		pPolicyConfig->Release();
+		//pPolicyConfig->Release();
+		SAFE_RELEASE(pPolicyConfig);
 	}
 	return hr;
 }
@@ -145,24 +146,26 @@ HRESULT Macro::setDefaultAudioPlaybackDevice(LPCWSTR devID) {
 void Macro::toggleMute() {
 	HRESULT hr = CoInitialize(NULL);
 	if (SUCCEEDED(hr)) {
-	IMMDeviceEnumerator* de;
-	HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
-	if (SUCCEEDED(hr)) {
-		IMMDevice* micDevicePtr;
-		hr = de->GetDefaultAudioEndpoint(EDataFlow::eCapture, ERole::eCommunications, &micDevicePtr);
+		IMMDeviceEnumerator* de;
+		HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
 		if (SUCCEEDED(hr)) {
-			hr = micDevicePtr->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, (void**)&micVolume);
+			IMMDevice* micDevicePtr;
+			hr = de->GetDefaultAudioEndpoint(EDataFlow::eCapture, ERole::eCommunications, &micDevicePtr);
 			if (SUCCEEDED(hr)) {
-				BOOL wasMuted;
-				micVolume->GetMute(&wasMuted);
+				hr = micDevicePtr->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, (void**)&micVolume);
+				if (SUCCEEDED(hr)) {
+					BOOL wasMuted;
+					micVolume->GetMute(&wasMuted);
 
-				//toggle the mute
-				micVolume->SetMute(!wasMuted, nullptr);
+					//toggle the mute
+					micVolume->SetMute(!wasMuted, nullptr);
+				}
+				//micDevicePtr->Release();
+				SAFE_RELEASE(micDevicePtr);
 			}
-			micDevicePtr->Release();
+			//de->Release();
+			SAFE_RELEASE(de);
 		}
-		de->Release();
-	}
 	}
 	CoUninitialize();
 }
@@ -208,21 +211,26 @@ void Macro::swapOutput() {
 													hr = setDefaultAudioPlaybackDevice(pstrNextId);
 													i = count + 1;	//simple way to break and run cleanup
 												}
-												nextOutput->Release();
+												//nextOutput->Release();
+												SAFE_RELEASE(nextOutput);
 											}
 										}
 									}
-									nextOutput->Release();
+									//nextOutput->Release();
+									SAFE_RELEASE(nextOutput);
 								}
 							}
 						}
 					}
 				}
-				defaultOutput->Release();
+				//defaultOutput->Release();
+				SAFE_RELEASE(defaultOutput);
 			}
-			outputDeviceList->Release();
+			//outputDeviceList->Release();
+			SAFE_RELEASE(outputDeviceList);
 		}
-		de->Release();
+		//de->Release();
+		SAFE_RELEASE(de);
 	}
 	}
 	CoUninitialize();

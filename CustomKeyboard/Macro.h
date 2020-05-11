@@ -10,6 +10,7 @@
 #include <string>
 #include <powrprof.h>
 #include "LogitechLEDLib.h"
+#include "Safety.h"
 
 enum class MacroType {
 	launchApp,
