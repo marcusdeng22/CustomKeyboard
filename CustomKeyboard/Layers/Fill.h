@@ -53,7 +53,7 @@ public:
 class Fill : public Layer {
 private:
 	bool initialized;
-	IMMDeviceEnumerator* de;
+	IMMDeviceEnumerator* de = NULL;
 	IAudioEndpointVolume* micVolume;	//TODO: use a smart pointer
 	EndpointNotifClient* outputNotif = NULL;
 

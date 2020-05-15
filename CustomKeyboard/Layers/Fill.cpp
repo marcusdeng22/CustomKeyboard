@@ -102,7 +102,9 @@ Fill::~Fill() {
 		de->UnregisterEndpointNotificationCallback(outputNotif);
 		CoUninitialize();
 	}
-	SAFE_RELEASE(de);
+	if (de) {
+		SAFE_RELEASE(de);
+	}
 }
 
 void Fill::detectDefault() {
