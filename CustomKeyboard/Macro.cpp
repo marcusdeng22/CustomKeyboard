@@ -17,18 +17,10 @@ Macro::Macro(std::vector<KeyState> ks, std::vector<int> d, int defDelay) {
 	defaultDelay = defDelay;
 }
 
-Macro::Macro(MacroType m) {
+Macro::Macro(IMMDeviceEnumerator* de, MacroType m) {
+	this->de = de;
 	micVolume = nullptr;
-	if (m == MacroType::audioCycle || m == MacroType::micToggle) {
-		/*HRESULT hr = CoInitialize(NULL);
-		if (SUCCEEDED(hr)) {*/
-			mode = m;
-		/*}
-		else {
-			mode = MacroType::NONE;
-		}*/
-	}
-	else if (m == MacroType::power) {
+	if (m == MacroType::audioCycle || m == MacroType::micToggle || m == MacroType::power) {
 		mode = m;
 	}
 	else {
@@ -44,9 +36,7 @@ Macro::Macro(int delay) {
 }
 
 Macro::~Macro() {
-	/*if (mode == MacroType::audioCycle || mode == MacroType::micToggle) {
-		CoUninitialize();
-	}*/
+	SAFE_RELEASE(micVolume);
 }
 
 void Macro::exec() {
@@ -139,101 +129,72 @@ HRESULT Macro::setDefaultAudioPlaybackDevice(LPCWSTR devID) {
 	if (SUCCEEDED(hr))
 	{
 		hr = pPolicyConfig->SetDefaultEndpoint(devID, ERole::eConsole);
-		//pPolicyConfig->Release();
 		SAFE_RELEASE(pPolicyConfig);
 	}
 	return hr;
 }
 
 void Macro::toggleMute() {
-	HRESULT hr = CoInitialize(NULL);
+	IMMDevice* micDevicePtr;
+	HRESULT hr = de->GetDefaultAudioEndpoint(EDataFlow::eCapture, ERole::eCommunications, &micDevicePtr);
 	if (SUCCEEDED(hr)) {
-		IMMDeviceEnumerator* de;
-		HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
+		hr = micDevicePtr->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, (void**)&micVolume);
 		if (SUCCEEDED(hr)) {
-			IMMDevice* micDevicePtr;
-			hr = de->GetDefaultAudioEndpoint(EDataFlow::eCapture, ERole::eCommunications, &micDevicePtr);
-			if (SUCCEEDED(hr)) {
-				hr = micDevicePtr->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, (void**)&micVolume);
-				if (SUCCEEDED(hr)) {
-					BOOL wasMuted;
-					micVolume->GetMute(&wasMuted);
+			BOOL wasMuted;
+			micVolume->GetMute(&wasMuted);
 
-					//toggle the mute
-					micVolume->SetMute(!wasMuted, nullptr);
-				}
-				//micDevicePtr->Release();
-				SAFE_RELEASE(micDevicePtr);
-			}
-			//de->Release();
-			SAFE_RELEASE(de);
+			//toggle the mute
+			micVolume->SetMute(!wasMuted, nullptr);
 		}
 	}
-	CoUninitialize();
+	SAFE_RELEASE(micDevicePtr);
 }
 
 void Macro::swapOutput() {
-	HRESULT hr = CoInitialize(NULL);
+	IMMDeviceCollection* outputDeviceList;
+	de->EnumAudioEndpoints(EDataFlow::eRender, DEVICE_STATE_ACTIVE, &outputDeviceList);
+	//get the default
+	IMMDevice* defaultOutput = nullptr;
+	LPWSTR pstrDefault = NULL;	//to store the ID of the default
+	HRESULT hr = de->GetDefaultAudioEndpoint(EDataFlow::eRender, ERole::eMultimedia, &defaultOutput);
 	if (SUCCEEDED(hr)) {
-	IMMDeviceEnumerator* de;
-	HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
-	if (SUCCEEDED(hr)) {
-		IMMDeviceCollection* outputDeviceList;
-		de->EnumAudioEndpoints(EDataFlow::eRender, DEVICE_STATE_ACTIVE, &outputDeviceList);
+		hr = defaultOutput->GetId(&pstrDefault);
 		if (SUCCEEDED(hr)) {
-			//get the default
-			IMMDevice* defaultOutput;
-			LPWSTR pstrDefault = NULL;	//to store the ID of the default
-			hr = de->GetDefaultAudioEndpoint(EDataFlow::eRender, ERole::eMultimedia, &defaultOutput);
+			UINT count;
+			hr = outputDeviceList->GetCount(&count);
 			if (SUCCEEDED(hr)) {
-				hr = defaultOutput->GetId(&pstrDefault);
-				if (SUCCEEDED(hr)) {
-					UINT count;
-					hr = outputDeviceList->GetCount(&count);
-					if (SUCCEEDED(hr)) {
-						//loop through all output devices, and once we find the default, set the next index (wraparound) to be the new default
-						IMMDevice* nextOutput;
-						LPWSTR pstrNextId = NULL;
-						if (count != 1) {	//more than one device to switch between
-							for (ULONG i = 0; i < count; i++) {
-								hr = outputDeviceList->Item(i, &nextOutput);
-								if (SUCCEEDED(hr)) {
-									hr = nextOutput->GetId(&pstrNextId);
+				//loop through all output devices, and once we find the default, set the next index (wraparound) to be the new default
+				IMMDevice* nextOutput = nullptr;
+				LPWSTR pstrNextId = NULL;
+				if (count != 1) {	//more than one device to switch between
+					for (ULONG i = 0; i < count; i++) {
+						hr = outputDeviceList->Item(i, &nextOutput);
+						if (SUCCEEDED(hr)) {
+							hr = nextOutput->GetId(&pstrNextId);
+							if (SUCCEEDED(hr)) {
+								if (!lstrcmpi(pstrNextId, pstrDefault)) {	//same IDs
+									//set the next as the new default and break
+									i++;
+									if (i == count) {	//wraparound
+										i = 0;
+									}
+									hr = outputDeviceList->Item(i, &nextOutput);
 									if (SUCCEEDED(hr)) {
-										if (!lstrcmpi(pstrNextId, pstrDefault)) {	//same IDs
-											//set the next as the new default and break
-											i++;
-											if (i == count) {	//wraparound
-												i = 0;
-											}
-											hr = outputDeviceList->Item(i, &nextOutput);
-											if (SUCCEEDED(hr)) {
-												hr = nextOutput->GetId(&pstrNextId);
-												if (SUCCEEDED(hr)) {
-													hr = setDefaultAudioPlaybackDevice(pstrNextId);
-													i = count + 1;	//simple way to break and run cleanup
-												}
-												//nextOutput->Release();
-												SAFE_RELEASE(nextOutput);
-											}
+										hr = nextOutput->GetId(&pstrNextId);
+										if (SUCCEEDED(hr)) {
+											hr = setDefaultAudioPlaybackDevice(pstrNextId);
+											i = count + 1;	//simple way to break and run cleanup
 										}
 									}
-									//nextOutput->Release();
-									SAFE_RELEASE(nextOutput);
 								}
 							}
 						}
 					}
 				}
-				//defaultOutput->Release();
-				SAFE_RELEASE(defaultOutput);
+				SAFE_RELEASE(nextOutput);
 			}
-			//outputDeviceList->Release();
-			SAFE_RELEASE(outputDeviceList);
 		}
-		//de->Release();
-		SAFE_RELEASE(de);
 	}
-	}
-	CoUninitialize();
+	SAFE_RELEASE(defaultOutput);
+	SAFE_RELEASE(outputDeviceList);
 }

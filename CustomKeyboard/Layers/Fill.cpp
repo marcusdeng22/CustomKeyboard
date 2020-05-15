@@ -21,27 +21,17 @@ HRESULT EndpointNotifClient::OnDefaultDeviceChanged(EDataFlow flow, ERole role, 
 	return S_OK;
 }
 
-//TODO: update the device when changing the default device
+//TODO: update the device when changing the default device (detect when default communications device has changed)
 void Fill::initMic() {
 	initialized = false;
 	if (condition == Condition::MicMuted) {
-		HRESULT hr = CoInitialize(NULL);
+		IMMDevice* micDevicePtr;
+		HRESULT hr = de->GetDefaultAudioEndpoint(EDataFlow::eCapture, ERole::eCommunications, &micDevicePtr);
 		if (SUCCEEDED(hr)) {
-			//IMMDeviceEnumerator* de;
-			hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
-			if (SUCCEEDED(hr)) {
-				IMMDevice* micDevicePtr;
-				hr = de->GetDefaultAudioEndpoint(EDataFlow::eCapture, ERole::eCommunications, &micDevicePtr);
-				if (SUCCEEDED(hr)) {
-					hr = micDevicePtr->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, (void**)&micVolume);
-					initialized = true;
-				}
-				//micDevicePtr->Release();
-				SAFE_RELEASE(micDevicePtr);
-			}
-			//de->Release();
-			SAFE_RELEASE(de);
+			hr = micDevicePtr->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, (void**)&micVolume);
+			initialized = true;
 		}
+		SAFE_RELEASE(micDevicePtr);
 	}
 }
 
@@ -50,24 +40,18 @@ void Fill::initOutput() {
 	outputNotif = new EndpointNotifClient(this);
 	if (condition == Condition::AudioOutput) {
 		//register a callback on default device changed
-		HRESULT hr = CoInitialize(NULL);
-		if (SUCCEEDED(hr)) {
-			//IMMDeviceEnumerator* de;
-			hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&de);
-			if (SUCCEEDED(hr)) {
-				de->RegisterEndpointNotificationCallback(outputNotif);
-				initialized = true;
-				//find the default output device and its index, and set the color index to it
-				detectDefault();
-			}
-		}
+		de->RegisterEndpointNotificationCallback(outputNotif);
+		initialized = true;
+		//find the default output device and its index, and set the color index to it
+		detectDefault();
 	}
 }
 
-void Fill::doSetup(Condition cond, std::vector<Color> colorList) {
+void Fill::doSetup(Condition cond, std::vector<Color> colorList, IMMDeviceEnumerator* de) {
 	micVolume = nullptr;
 	condition = cond;
 	colorData = colorList;
+	this->de = de;
 	OutputDebugString(L"Setting up fill layer\n");
 	if (condition == Condition::MicMuted) {
 		OutputDebugString(L"Init mic\n");
@@ -82,29 +66,25 @@ void Fill::doSetup(Condition cond, std::vector<Color> colorList) {
 	}
 }
 
-Fill::Fill(Condition cond, std::vector<Color> colorList) {
-	Fill::doSetup(cond, colorList);
+Fill::Fill(Condition cond, std::vector<Color> colorList, IMMDeviceEnumerator* de) {
+	Fill::doSetup(cond, colorList, de);
 	for (auto const& k : LogiLed::bitmapIndex) {
 		affectedKeys.push_back(k.first);
 	}
 }
 
-Fill::Fill(std::list<LogiLed::KeyName> l, Condition cond, std::vector<Color> colorList) {
-	Fill::doSetup(cond, colorList);
+Fill::Fill(std::list<LogiLed::KeyName> l, Condition cond, std::vector<Color> colorList, IMMDeviceEnumerator* de) {
+	Fill::doSetup(cond, colorList, de);
 	affectedKeys = l;
 }
 
 Fill::~Fill() {
-	if (condition == Condition::MicMuted) {
-		CoUninitialize();
-	}
-	else if (condition == Condition::AudioOutput) {
+	//unregister the notification callback
+	if (condition == Condition::AudioOutput) {
 		de->UnregisterEndpointNotificationCallback(outputNotif);
-		CoUninitialize();
+		outputNotif = nullptr;
 	}
-	if (de) {
-		SAFE_RELEASE(de);
-	}
+	SAFE_RELEASE(micVolume);
 }
 
 void Fill::detectDefault() {

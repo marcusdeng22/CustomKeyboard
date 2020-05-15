@@ -46,14 +46,15 @@ protected:
 	std::vector<KeyState> keySeq;
 	std::vector<int> delays;
 	int defaultDelay;
-	IAudioEndpointVolume* micVolume;	//TODO: use a smart pointer
+	IMMDeviceEnumerator* de = nullptr;
+	IAudioEndpointVolume* micVolume = nullptr;	//TODO: use a smart pointer https://docs.microsoft.com/en-us/cpp/atl/reference/ccomptr-class?view=vs-2019
 	HRESULT setDefaultAudioPlaybackDevice(LPCWSTR devID);
 	void toggleMute();
 	void swapOutput();
 public:
 	Macro(std::string f, std::string a);
 	Macro(std::vector<KeyState> ks, std::vector<int> d = {}, int defDelay = 50);
-	Macro(MacroType m);
+	Macro(IMMDeviceEnumerator* de, MacroType m);
 	Macro(int delay);
 	~Macro();
 	void exec();

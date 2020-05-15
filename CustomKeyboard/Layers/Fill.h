@@ -4,7 +4,6 @@
 #include <endpointvolume.h>
 #include <mmdeviceapi.h>
 #include "../Safety.h"
-//#include "EndpointNotifClient.h"
 
 class Fill;
 
@@ -17,7 +16,7 @@ public:
 	EndpointNotifClient(Fill* fillLayer);
 	~EndpointNotifClient() {}
 
-	//IUnknown methods
+	//IUnknown inherited virtual methods
 	ULONG AddRef() { return InterlockedIncrement(&_cRef); }
 	ULONG Release() {
 		ULONG ulRef = InterlockedDecrement(&_cRef);
@@ -53,9 +52,9 @@ public:
 class Fill : public Layer {
 private:
 	bool initialized;
-	IMMDeviceEnumerator* de = NULL;
-	IAudioEndpointVolume* micVolume;	//TODO: use a smart pointer
-	EndpointNotifClient* outputNotif = NULL;
+	IMMDeviceEnumerator* de = nullptr;
+	IAudioEndpointVolume* micVolume = nullptr;	//TODO: use a smart pointer https://docs.microsoft.com/en-us/cpp/atl/reference/ccomptr-class?view=vs-2019
+	EndpointNotifClient* outputNotif = nullptr;
 
 	std::vector<Color> colorData;
 	int colorIndex = 0;
@@ -64,13 +63,12 @@ private:
 	void initOutput();
 	void detectDefault();
 	void paint(std::vector<unsigned char>&);
-	void doSetup(Condition cond, std::vector<Color> colorList);
+	void doSetup(Condition cond, std::vector<Color> colorList, IMMDeviceEnumerator* de);
 public:
-	Fill(Condition cond, std::vector<Color> colorList);
-	Fill(std::list<LogiLed::KeyName> l, Condition cond, std::vector<Color> colorList);
+	Fill(Condition cond, std::vector<Color> colorList, IMMDeviceEnumerator* de);
+	Fill(std::list<LogiLed::KeyName> l, Condition cond, std::vector<Color> colorList, IMMDeviceEnumerator* de);
 	~Fill();
 
-	//int getColorDataLength() { return colorData.size(); }
 	void findAndSetIndex(LPCWSTR name);
 	void setColorDataIndex(int i) { colorIndex = i % colorData.size(); }
 	void tick(std::vector<unsigned char>&);
