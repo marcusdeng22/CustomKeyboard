@@ -70,6 +70,6 @@ public:
 	~Fill();
 
 	void findAndSetIndex(LPCWSTR name);
-	void setColorDataIndex(int i) { colorIndex = i % colorData.size(); }
+	void setColorDataIndex(int i);
 	void tick(std::vector<unsigned char>&);
 };

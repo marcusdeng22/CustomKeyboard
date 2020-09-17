@@ -12,7 +12,7 @@ HRESULT EndpointNotifClient::OnDefaultDeviceChanged(EDataFlow flow, ERole role, 
 	//only monitor render flows
 	if (flow == eRender) {
 		//lookup the index of the new default device, and set the color index of Fill to that
-		OutputDebugString(L"Default render device changed!");
+		OutputDebugString(L"Default render device changed! ");
 		OutputDebugStringW(pwstrDeviceId);
 		OutputDebugString(L"\n");
 
@@ -110,12 +110,13 @@ void Fill::findAndSetIndex(LPCWSTR name) {
 		//loop through all output devices, and once we find the default, grab the index
 		IMMDevice* nextOutput;
 		LPWSTR pstrNextId = NULL;
+
 		for (ULONG i = 0; i < count; i++) {
 			hr = outputDeviceList->Item(i, &nextOutput);
 			if (SUCCEEDED(hr)) {
 				hr = nextOutput->GetId(&pstrNextId);
 				if (SUCCEEDED(hr)) {
-					if (lstrcmpi(pstrNextId, name)) {	//same IDs
+					if (lstrcmpi(pstrNextId, name) == 0) {	//same IDs
 						//set the color index
 						Fill::setColorDataIndex(i);
 						break;
@@ -126,6 +127,10 @@ void Fill::findAndSetIndex(LPCWSTR name) {
 		}
 	}
 	SAFE_RELEASE(outputDeviceList);
+}
+
+void Fill::setColorDataIndex(int i) {
+	colorIndex = i % colorData.size();
 }
 
 void Fill::paint(std::vector<unsigned char>& colorVector) {
